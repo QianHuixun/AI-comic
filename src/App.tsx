@@ -1,12 +1,12 @@
 import { Navigate, Route, Routes } from "react-router-dom";
-import Ranking from "./pages/ranking";
+import  AICreation  from "./pages/ai-creation";
 
 function App() {
   return (
     <Routes>
-      <Route element={<Ranking />} path="/" />
-      <Route element={<Ranking />} path="/ranking" />
-      <Route element={<Navigate replace to="/ranking" />} path="*" />
+      <Route element={<AICreation />} path="/" />
+      <Route element={<AICreation />} path="/aiCreate" />
+      <Route element={<Navigate replace to="/ai-creation" />} path="*" />
     </Routes>
   );
 }
