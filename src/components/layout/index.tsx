@@ -1,10 +1,17 @@
+import type React from "react";
 import { Footer } from "../footer";
 import { Header } from "../header";
-function Layout(){
-return (<>
-<section>
-<Header></Header>
-<Footer></Footer>
-</section>
-</>)
+
+export function Layout({children}:{children:React.ReactNode}) {
+  return (
+    <>
+      <section>
+        <Header />
+        <div className="pt-[6%]">
+        { children}
+        </div>
+        <Footer />
+      </section>
+    </>
+  );
 }
