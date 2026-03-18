@@ -1,0 +1,329 @@
+.page {
+  @apply min-h-screen bg-[color:var(--bg-secondary)] text-[color:var(--text-primary)];
+}
+
+.header {
+  @apply py-5;
+  background: linear-gradient(135deg, var(--primary-700), var(--primary-800));
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.headerInner {
+  @apply mx-auto flex max-w-[1440px] flex-col items-center gap-5 px-5 lg:flex-row lg:justify-between lg:px-10;
+}
+
+.logo {
+  @apply flex items-center gap-[10px] text-[28px] font-extrabold text-white no-underline;
+}
+
+.logoIcon {
+  @apply flex h-[45px] w-[45px] items-center justify-center rounded-xl bg-white text-[color:var(--primary-700)];
+}
+
+.logoIconSvg {
+  @apply h-6 w-6;
+}
+
+.searchBox {
+  @apply flex w-full items-center rounded-[999px] bg-white px-5 py-[10px] md:max-w-[420px];
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.searchIcon {
+  @apply h-4 w-4 shrink-0 text-[color:var(--text-secondary)];
+}
+
+.searchInput {
+  @apply min-w-0 flex-1 border-0 bg-transparent px-[10px] py-[5px] text-[15px] outline-none;
+}
+
+.searchInput::placeholder {
+  color: var(--text-secondary);
+}
+
+.searchButton {
+  @apply rounded-[999px] border-0 px-5 py-2 text-[14px] font-semibold text-white transition duration-300;
+  background: var(--secondary);
+}
+
+.searchButton:hover {
+  background: var(--accent-600);
+  transform: scale(1.05);
+}
+
+.navMenu {
+  @apply flex flex-wrap justify-center gap-3 md:gap-[18px] xl:gap-[30px];
+}
+
+.navLink {
+  @apply rounded-lg px-4 py-2 text-[15px] font-semibold text-white no-underline transition duration-300;
+}
+
+.navLink:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.navLinkActive {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.userMenuLink {
+  @apply rounded-lg px-4 py-2 text-[15px] font-semibold text-white no-underline transition duration-300;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.userMenuLink:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.main {
+  @apply mx-auto max-w-[1440px] px-5 py-10;
+}
+
+.profileSection {
+  @apply mb-10 flex flex-col gap-6 rounded-[20px] bg-white p-[30px] lg:flex-row lg:items-center;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+
+.profileAvatar {
+  @apply flex h-[120px] w-[120px] shrink-0 items-center justify-center self-center rounded-full text-white;
+  background: linear-gradient(135deg, var(--secondary), var(--accent-600));
+}
+
+.profileAvatarIcon {
+  @apply h-12 w-12;
+}
+
+.profileInfo {
+  @apply flex flex-1 flex-col gap-5;
+}
+
+.profileName {
+  @apply mb-2 text-center text-2xl font-bold lg:text-left;
+}
+
+.profileSubtitle {
+  @apply text-center text-[15px] text-[color:var(--text-secondary)] lg:text-left;
+}
+
+.profileStats {
+  @apply flex flex-wrap justify-center gap-5 md:gap-[30px] lg:justify-start;
+}
+
+.profileStat {
+  @apply flex min-w-[96px] flex-col items-center;
+}
+
+.profileStatValue {
+  @apply text-[18px] font-semibold;
+}
+
+.profileStatLabel {
+  @apply text-sm text-[color:var(--text-secondary)];
+}
+
+.profileActions {
+  @apply flex justify-center lg:justify-end;
+}
+
+.actionButton {
+  @apply rounded-xl border-2 px-5 py-[10px] text-[14px] font-semibold transition duration-300;
+  border-color: var(--border);
+}
+
+.actionButton:hover {
+  border-color: var(--secondary);
+  color: var(--secondary);
+}
+
+.primaryButton {
+  @apply border-transparent text-white;
+  background: var(--secondary);
+}
+
+.primaryButton:hover {
+  color: white;
+  background: var(--accent-600);
+  border-color: var(--accent-600);
+}
+
+.collectionSection {
+  @apply rounded-[20px] bg-white p-5 md:p-[30px];
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+
+.sectionHeading {
+  @apply mb-6;
+}
+
+.sectionTitle {
+  @apply flex items-center gap-[10px] text-2xl font-bold;
+}
+
+.sectionIcon {
+  @apply h-6 w-6 text-[color:var(--secondary)];
+}
+
+.tabs {
+  @apply mb-[30px] flex gap-3 overflow-x-auto border-b-2 pb-2;
+  border-color: var(--border);
+}
+
+.tab {
+  @apply whitespace-nowrap border-0 border-b-[3px] border-transparent bg-transparent px-0 py-3 text-[15px] font-semibold text-[color:var(--text-secondary)] transition duration-300 md:px-6;
+}
+
+.tab:hover {
+  color: var(--text-primary);
+}
+
+.tabActive {
+  color: var(--secondary);
+  border-bottom-color: var(--secondary);
+}
+
+.comicGrid {
+  @apply grid grid-cols-[repeat(auto-fit,minmax(180px,1fr))] gap-5;
+}
+
+.templateGrid {
+  @apply grid grid-cols-[repeat(auto-fit,minmax(240px,1fr))] gap-[25px];
+}
+
+.collectionCard {
+  @apply overflow-hidden rounded-2xl bg-[color:var(--bg-secondary)] transition duration-300;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+.collectionCard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+}
+
+.coverWrapper {
+  @apply relative h-[260px] overflow-hidden;
+}
+
+.templateCoverWrapper {
+  @apply relative h-[180px] overflow-hidden;
+}
+
+.coverImage {
+  @apply h-full w-full object-cover;
+}
+
+.favoriteButton {
+  @apply absolute right-[10px] top-[10px] flex h-9 w-9 items-center justify-center rounded-full border-0 bg-white text-[color:var(--text-secondary)] transition duration-300;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.favoriteButton:hover {
+  transform: scale(1.08);
+  color: var(--secondary);
+}
+
+.favoriteButtonActive {
+  color: var(--secondary);
+}
+
+.favoriteIcon {
+  @apply h-4 w-4;
+}
+
+.cardBody {
+  @apply p-[15px];
+}
+
+.cardBodyLarge {
+  @apply p-5;
+}
+
+.cardTitle {
+  @apply mb-2 block text-base font-semibold text-[color:var(--text-primary)] no-underline transition duration-300;
+}
+
+.cardTitle:hover {
+  color: var(--secondary);
+}
+
+.cardMeta {
+  @apply flex items-center justify-between gap-3 text-sm text-[color:var(--text-secondary)];
+}
+
+.templateStats {
+  @apply mb-[15px] flex items-center gap-[15px] text-sm text-[color:var(--text-secondary)];
+}
+
+.templateStat {
+  @apply flex items-center gap-[6px];
+}
+
+.templateStatIcon {
+  @apply h-[14px] w-[14px];
+}
+
+.useTemplateButton {
+  @apply w-full rounded-lg border-0 px-4 py-[10px] text-sm font-semibold text-white transition duration-300;
+  background: var(--secondary);
+}
+
+.useTemplateButton:hover {
+  background: var(--accent-600);
+}
+
+.footer {
+  @apply mt-[60px] py-[30px] pt-[60px] text-white;
+  background: linear-gradient(135deg, var(--primary-700), var(--primary-800));
+}
+
+.footerInner {
+  @apply mx-auto max-w-[1440px] px-5 lg:px-10;
+}
+
+.footerContent {
+  @apply mb-10 grid grid-cols-1 gap-10 md:grid-cols-2 xl:grid-cols-[2fr_1fr_1fr_1fr];
+}
+
+.footerBrand {
+  @apply max-w-[420px];
+}
+
+.footerDescription {
+  @apply mt-5 text-sm leading-[1.8];
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.footerColumnTitle {
+  @apply mb-5 text-base font-semibold text-white;
+}
+
+.footerList {
+  @apply list-none space-y-3;
+}
+
+.footerLink {
+  @apply text-sm text-white/70 no-underline transition duration-300;
+}
+
+.footerLink:hover {
+  @apply text-white;
+}
+
+.footerBottom {
+  @apply border-t pt-[30px] text-center text-sm text-white/70;
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+@media (max-width: 480px) {
+  .profileAvatar {
+    @apply h-[100px] w-[100px];
+  }
+
+  .profileAvatarIcon {
+    @apply h-10 w-10;
+  }
+
+  .profileName {
+    @apply text-[20px];
+  }
+}
