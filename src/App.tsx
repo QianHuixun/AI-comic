@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 import { useEffect, useState } from 'react'
 import { createClient } from '@supabase/supabase-js'
 
@@ -5,6 +6,27 @@ type Instrument = {
   id?: string | number | null
   name?: string | null
   [key: string]: unknown
+=======
+import { Navigate, Route, Routes } from "react-router-dom";
+import EditProfilePage from "./pages/edit-profile";
+import LoginPage from "./pages/login";
+import MyPage from "./pages/my";
+import Ranking from "./pages/ranking";
+import SettingsPage from "./pages/settings";
+
+function App() {
+  return (
+    <Routes>
+      <Route element={<Ranking />} path="/" />
+      <Route element={<LoginPage />} path="/login" />
+      <Route element={<MyPage />} path="/my" />
+      <Route element={<EditProfilePage />} path="/my/edit-profile" />
+      <Route element={<SettingsPage />} path="/my/settings" />
+      <Route element={<Ranking />} path="/ranking" />
+      <Route element={<Navigate replace to="/ranking" />} path="*" />
+    </Routes>
+  );
+>>>>>>> Stashed changes
 }
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string | undefined
