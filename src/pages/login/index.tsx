@@ -2,7 +2,7 @@ import { useState, type ChangeEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import type { AuthTab, LoginForm, RegisterForm, FeatureItem } from "../../lib/types/login";
 import { BookIcon, PhoneIcon, UserIcon, MessageIcon } from "../../components/Icon/login";
-
+import { Form, Input, Checkbox, Button, message } from "antd";
 const featureItems: ReadonlyArray<FeatureItem> = [
   { description: "海量漫画资源，每日更新", icon: "book" },
   { description: "多设备同步，随时随地阅读", icon: "phone" },
@@ -30,45 +30,82 @@ function renderFeatureIcon(icon: FeatureItem["icon"]) {
 
 export default function LoginPage() {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState<AuthTab>("login");
-  const [loginForm, setLoginForm] = useState<LoginForm>({
-    password: "",
+  // 添加 activeTab 的 state 定义
+  const [activeTab, setActiveTab] = useState<"login" | "register">("login");
+  const [loginForm, setLoginForm] = useState({
     phone: "",
-    remember: false,
+    password: "",
+    remember: false
   });
-  const [registerForm, setRegisterForm] = useState<RegisterForm>({
-    agreement: false,
+
+  // 添加注册表单的 state（因为下面用了 registerForm）
+  const [registerForm, setRegisterForm] = useState({
+    phone: "",
+    password: "",
     confirmPassword: "",
-    password: "",
-    phone: "",
+    agreement: false
   });
 
-  const updateLoginField =
-    (field: keyof LoginForm) => (event: ChangeEvent<HTMLInputElement>) => {
-      const value =
-        event.target.type === "checkbox"
-          ? event.target.checked
-          : event.target.value;
+  // 更新登录表单字段的函数
+  const updateLoginField = (field) => (e) => {
+    const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
+    setLoginForm(prev => ({
+      ...prev,
+      [field]: value
+    }));
+  };
 
-      setLoginForm((current) => ({
-        ...current,
-        [field]: value,
-      }));
-    };
+  // 添加更新注册表单字段的函数
+  const updateRegisterField = (field) => (e) => {
+    const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
+    setRegisterForm(prev => ({
+      ...prev,
+      [field]: value
+    }));
+  };
 
-  const updateRegisterField =
-    (field: keyof RegisterForm) => (event: ChangeEvent<HTMLInputElement>) => {
-      const value =
-        event.target.type === "checkbox"
-          ? event.target.checked
-          : event.target.value;
+  // 处理登录
+  const handleLogin = (values) => {
+    console.log("登录信息：", values);
+    if (!values.phone) {
+      message.error("请输入手机号");
+      return;
+    }
+    if (!values.password) {
+      message.error("请输入密码");
+      return;
+    }
+    const phoneRegex = /^1[3-9]\d{9}$/;
+    if (!phoneRegex.test(values.phone)) {
+      message.error("请输入正确的手机号");
+      return;
+    }
+    message.success("登录成功");
+    navigate("/");
+  };
 
-      setRegisterForm((current) => ({
-        ...current,
-        [field]: value,
-      }));
-    };
-
+  // 处理注册
+  const handleRegister = () => {
+    // 注册逻辑
+    if (!registerForm.phone) {
+      message.error("请输入手机号");
+      return;
+    }
+    if (!registerForm.password) {
+      message.error("请设置密码");
+      return;
+    }
+    if (registerForm.password !== registerForm.confirmPassword) {
+      message.error("两次输入的密码不一致");
+      return;
+    }
+    if (registerForm.agreement) {
+      message.error("请阅读并同意用户协议和隐私政策");
+      return;
+    }
+    message.success("注册成功");
+    navigate("/");
+  };
   return (
     <div className="flex min-h-screen items-center justify-center bg-[color:var(--bg-secondary)] px-5 py-10 text-[color:var(--text-primary)]">
       <div className="mx-auto w-full max-w-[1400px]">
@@ -136,132 +173,250 @@ export default function LoginPage() {
 
             {activeTab === "login" ? (
               <div>
-                <div className="mb-5">
-                  <label className="mb-2 block text-[14px] font-semibold text-[color:var(--text-primary)]">
-                    手机号
-                  </label>
-                  <input
-                    className="w-full rounded-[10px] border-2 border-[color:var(--border)] px-4 py-3 text-[15px] transition-all duration-300 outline-none placeholder:text-[color:var(--text-secondary)] focus:border-[color:var(--primary-500)] focus:shadow-[0_0_0_3px_rgba(96,96,96,0.1)]"
-                    onChange={updateLoginField("phone")}
-                    placeholder="请输入手机号"
-                    type="text"
-                    value={loginForm.phone}
-                  />
-                </div>
-
-                <div className="mb-5">
-                  <label className="mb-2 block text-[14px] font-semibold text-[color:var(--text-primary)]">
-                    密码
-                  </label>
-                  <input
-                    className="w-full rounded-[10px] border-2 border-[color:var(--border)] px-4 py-3 text-[15px] transition-all duration-300 outline-none placeholder:text-[color:var(--text-secondary)] focus:border-[color:var(--primary-500)] focus:shadow-[0_0_0_3px_rgba(96,96,96,0.1)]"
-                    onChange={updateLoginField("password")}
-                    placeholder="请输入密码"
-                    type="password"
-                    value={loginForm.password}
-                  />
-                </div>
-
-                <div className="mb-[30px] flex items-center justify-between text-[14px]">
-                  <label className="flex cursor-pointer items-center gap-2">
-                    <input
-                      checked={loginForm.remember}
-                      className="h-4 w-4 accent-[color:var(--primary-600)]"
-                      onChange={updateLoginField("remember")}
-                      type="checkbox"
-                    />
-                    <span>记住我</span>
-                  </label>
-
-                  <a
-                    className="text-[color:var(--primary-600)] no-underline transition-colors duration-300 hover:text-[color:var(--primary-700)] hover:underline"
-                    href="#"
-                  >
-                    忘记密码？
-                  </a>
-                </div>
-
-                <button
-                  className="mb-5 w-full rounded-[10px] bg-[linear-gradient(135deg,var(--primary-600),var(--primary-700))] px-[14px] py-[14px] text-[16px] font-semibold text-white transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_4px_15px_rgba(0,0,0,0.1)]"
-                  onClick={() => navigate("/home")}
-                  type="button"
+                <Form
+                  layout="vertical"
+                  initialValues={{ remember: loginForm.remember }}
+                  onFinish={handleLogin}  // 表单提交时触发
+                  onValuesChange={(changedValues) => {
+                    // 同步到 state
+                    if (changedValues.phone !== undefined) {
+                      updateLoginField("phone")({
+                        target: { value: changedValues.phone }
+                      });
+                    }
+                    if (changedValues.password !== undefined) {
+                      updateLoginField("password")({
+                        target: { value: changedValues.password }
+                      });
+                    }
+                    if (changedValues.remember !== undefined) {
+                      updateLoginField("remember")({
+                        target: { checked: changedValues.remember }
+                      });
+                    }
+                  }}
                 >
-                  登录
-                </button>
+                  <Form.Item
+                    name="phone"
+                    className="mb-5"
+                    label={
+                      <label className="mb-2 block text-[14px] font-semibold text-[color:var(--text-primary)]">
+                        手机号
+                      </label>
+                    }
+                    rules={[
+                      { required: true, message: "请输入手机号" },
+                      { pattern: /^1[3-9]\d{9}$/, message: "请输入正确的手机号 11位" }
+                    ]}
+                  >
+                    <Input
+                      className="w-full rounded-[10px] border-2 border-[color:var(--border)] px-4 py-3 text-[15px] transition-all duration-300 outline-none placeholder:text-[color:var(--text-secondary)] focus:border-[color:var(--primary-500)] focus:shadow-[0_0_0_3px_rgba(96,96,96,0.1)]"
+                      placeholder="请输入手机号"
+                      maxLength={11}
+                    />
+                  </Form.Item>
+
+                  <Form.Item
+                    name="password"
+                    className="mb-5"
+                    label={
+                      <label className="mb-2 block text-[14px] font-semibold text-[color:var(--text-primary)]">
+                        密码
+                      </label>
+                    }
+                    rules={[
+                      { required: true, message: "请输入密码" },
+                      { min: 6, message: "密码至少6位" }
+                    ]}
+                  >
+                    <Input.Password
+                      className="w-full rounded-[10px] border-2 border-[color:var(--border)] px-4 py-3 text-[15px] transition-all duration-300 outline-none placeholder:text-[color:var(--text-secondary)] focus:border-[color:var(--primary-500)] focus:shadow-[0_0_0_3px_rgba(96,96,96,0.1)]"
+                      placeholder="请输入密码"
+                    />
+                  </Form.Item>
+
+                  <div className="mb-[30px] flex items-center justify-between text-[14px]">
+                    <Form.Item name="remember" valuePropName="checked" noStyle>
+                      <Checkbox className="flex cursor-pointer items-center gap-2">
+                        <span>记住我</span>
+                      </Checkbox>
+                    </Form.Item>
+
+                    <a
+                      className="text-[color:var(--primary-600)] no-underline transition-colors duration-300 hover:text-[color:var(--primary-700)] hover:underline"
+                      href="#"
+                    >
+                      忘记密码？
+                    </a>
+                  </div>
+
+                  <Form.Item>
+                    <Button
+                      type="primary"
+                      htmlType="submit"  // 改为 submit 类型
+                      block
+                      className="mb-5 w-full rounded-[10px] bg-[linear-gradient(135deg,var(--primary-600),var(--primary-700))] px-[14px] py-[14px] text-[16px] font-semibold text-white transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_4px_15px_rgba(0,0,0,0.1)]"
+                    >
+                      登录
+                    </Button>
+                  </Form.Item>
+                </Form>
               </div>
             ) : (
               <div>
-                <div className="mb-5">
-                  <label className="mb-2 block text-[14px] font-semibold text-[color:var(--text-primary)]">
-                    手机号
-                  </label>
-                  <input
-                    className="w-full rounded-[10px] border-2 border-[color:var(--border)] px-4 py-3 text-[15px] transition-all duration-300 outline-none placeholder:text-[color:var(--text-secondary)] focus:border-[color:var(--primary-500)] focus:shadow-[0_0_0_3px_rgba(96,96,96,0.1)]"
-                    onChange={updateRegisterField("phone")}
-                    placeholder="请输入手机号"
-                    type="tel"
-                    value={registerForm.phone}
-                  />
-                </div>
-
-                <div className="mb-5">
-                  <label className="mb-2 block text-[14px] font-semibold text-[color:var(--text-primary)]">
-                    设置密码
-                  </label>
-                  <input
-                    className="w-full rounded-[10px] border-2 border-[color:var(--border)] px-4 py-3 text-[15px] transition-all duration-300 outline-none placeholder:text-[color:var(--text-secondary)] focus:border-[color:var(--primary-500)] focus:shadow-[0_0_0_3px_rgba(96,96,96,0.1)]"
-                    onChange={updateRegisterField("password")}
-                    placeholder="请设置6-20位密码"
-                    type="password"
-                    value={registerForm.password}
-                  />
-                </div>
-
-                <div className="mb-5">
-                  <label className="mb-2 block text-[14px] font-semibold text-[color:var(--text-primary)]">
-                    确认密码
-                  </label>
-                  <input
-                    className="w-full rounded-[10px] border-2 border-[color:var(--border)] px-4 py-3 text-[15px] transition-all duration-300 outline-none placeholder:text-[color:var(--text-secondary)] focus:border-[color:var(--primary-500)] focus:shadow-[0_0_0_3px_rgba(96,96,96,0.1)]"
-                    onChange={updateRegisterField("confirmPassword")}
-                    placeholder="请再次输入密码"
-                    type="password"
-                    value={registerForm.confirmPassword}
-                  />
-                </div>
-
-                <label className="mb-5 flex cursor-pointer items-start gap-2 text-[14px] leading-[1.6]">
-                  <input
-                    checked={registerForm.agreement}
-                    className="mt-0.5 h-4 w-4 shrink-0 accent-[color:var(--primary-600)]"
-                    onChange={updateRegisterField("agreement")}
-                    type="checkbox"
-                  />
-                  <span>
-                    我已阅读并同意{" "}
-                    <a
-                      className="text-[color:var(--primary-600)] no-underline transition-colors duration-300 hover:text-[color:var(--primary-700)] hover:underline"
-                      href="#"
-                    >
-                      用户协议
-                    </a>{" "}
-                    和{" "}
-                    <a
-                      className="text-[color:var(--primary-600)] no-underline transition-colors duration-300 hover:text-[color:var(--primary-700)] hover:underline"
-                      href="#"
-                    >
-                      隐私政策
-                    </a>
-                  </span>
-                </label>
-
-                <button
-                  className="mb-5 w-full rounded-[10px] bg-[linear-gradient(135deg,var(--primary-600),var(--primary-700))] px-[14px] py-[14px] text-[16px] font-semibold text-white transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_4px_15px_rgba(0,0,0,0.1)]"
-                  onClick={() => navigate("/home")}
-                  type="button"
+                <Form
+                  layout="vertical"
+                  onFinish={handleRegister}
+                  initialValues={{
+                    phone: registerForm.phone,
+                    password: registerForm.password,
+                    confirmPassword: registerForm.confirmPassword,
+                    agreement: registerForm.agreement
+                  }}
+                  onValuesChange={(changedValues) => {
+                    if (changedValues.phone !== undefined) {
+                      updateRegisterField("phone")({
+                        target: { value: changedValues.phone }
+                      });
+                    }
+                    if (changedValues.password !== undefined) {
+                      updateRegisterField("password")({
+                        target: { value: changedValues.password }
+                      });
+                    }
+                    if (changedValues.confirmPassword !== undefined) {
+                      updateRegisterField("confirmPassword")({
+                        target: { value: changedValues.confirmPassword }
+                      });
+                    }
+                    if (changedValues.agreement !== undefined) {
+                      updateRegisterField("agreement")({
+                        target: { checked: changedValues.agreement }
+                      });
+                    }
+                  }}
                 >
-                  注册
-                </button>
+                  <Form.Item
+                    name="phone"
+                    className="mb-5"
+                    label={
+                      <label className="mb-2 block text-[14px] font-semibold text-[color:var(--text-primary)]">
+                        手机号
+                      </label>
+                    }
+                    rules={[
+                      { required: true, message: "请输入手机号" },
+                      { pattern: /^1[3-9]\d{9}$/, message: "请输入正确的手机号" }
+                    ]}
+                  >
+                    <Input
+                      className="w-full rounded-[10px] border-2 border-[color:var(--border)] px-4 py-3 text-[15px] transition-all duration-300 outline-none placeholder:text-[color:var(--text-secondary)] focus:border-[color:var(--primary-500)] focus:shadow-[0_0_0_3px_rgba(96,96,96,0.1)]"
+                      placeholder="请输入手机号"
+                      maxLength={11}
+                    />
+                  </Form.Item>
+
+                  <Form.Item
+                    name="password"
+                    className="mb-5"
+                    label={
+                      <label className="mb-2 block text-[14px] font-semibold text-[color:var(--text-primary)]">
+                        设置密码
+                      </label>
+                    }
+                    rules={[
+                      { required: true, message: "请输入密码" },
+                      { min: 6, message: "密码至少6位" },
+                      { max: 20, message: "密码最多20位" }
+                    ]}
+                  >
+                    <Input.Password
+                      className="w-full rounded-[10px] border-2 border-[color:var(--border)] px-4 py-3 text-[15px] transition-all duration-300 outline-none placeholder:text-[color:var(--text-secondary)] focus:border-[color:var(--primary-500)] focus:shadow-[0_0_0_3px_rgba(96,96,96,0.1)]"
+                      placeholder="请设置6-20位密码"
+                    />
+                  </Form.Item>
+
+                  <Form.Item
+                    name="confirmPassword"
+                    className="mb-5"
+                    label={
+                      <label className="mb-2 block text-[14px] font-semibold text-[color:var(--text-primary)]">
+                        确认密码
+                      </label>
+                    }
+                    dependencies={['password']}
+                    rules={[
+                      { required: true, message: "请确认密码" },
+                      ({ getFieldValue }) => ({
+                        validator(_, value) {
+                          if (!value || getFieldValue('password') === value) {
+                            return Promise.resolve();
+                          }
+                          return Promise.reject(new Error('两次输入的密码不一致'));
+                        },
+                      }),
+                    ]}
+                  >
+                    <Input.Password
+                      className="w-full rounded-[10px] border-2 border-[color:var(--border)] px-4 py-3 text-[15px] transition-all duration-300 outline-none placeholder:text-[color:var(--text-secondary)] focus:border-[color:var(--primary-500)] focus:shadow-[0_0_0_3px_rgba(96,96,96,0.1)]"
+                      placeholder="请再次输入密码"
+                    />
+                  </Form.Item>
+
+                  <Form.Item
+                    name="agreement"
+                    className="mb-5"
+                    valuePropName="checked"
+                    getValueFromEvent={(e) => {
+                      // 确保返回正确的布尔值
+                      return e.target.checked;
+                    }}
+                    rules={[
+                      {
+                        validator: (_, value) => {
+                          console.log("验证时的值:", value, "类型:", typeof value);
+                          // 严格检查是否为 true
+                          if (value === true) {
+                            return Promise.resolve();
+                          }
+                          return Promise.reject(new Error('请阅读并同意用户协议和隐私政策'));
+                        }
+                      }
+                    ]}
+                  >
+                    <Checkbox>
+                      <span className="text-[14px] leading-[1.6]">
+                        我已阅读并同意{" "}
+                        <a
+                          className="text-[color:var(--primary-600)] no-underline transition-colors duration-300 hover:text-[color:var(--primary-700)] hover:underline"
+                          href="#"
+                          onClick={(e) => e.preventDefault()}
+                        >
+                          用户协议
+                        </a>{" "}
+                        和{" "}
+                        <a
+                          className="text-[color:var(--primary-600)] no-underline transition-colors duration-300 hover:text-[color:var(--primary-700)] hover:underline"
+                          href="#"
+                          onClick={(e) => e.preventDefault()}
+                        >
+                          隐私政策
+                        </a>
+                      </span>
+                    </Checkbox>
+                  </Form.Item>
+
+                  <Form.Item>
+                    <Button
+                      type="primary"
+                      htmlType="submit"
+                      block
+                      className="mb-5 w-full rounded-[10px] bg-[linear-gradient(135deg,var(--primary-600),var(--primary-700))] px-[14px] py-[14px] text-[16px] font-semibold text-white transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_4px_15px_rgba(0,0,0,0.1)]"
+                    >
+                      注册
+                    </Button>
+                  </Form.Item>
+                </Form>
               </div>
             )}
           </div>
