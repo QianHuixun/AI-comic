@@ -1,10 +1,6 @@
 import { useState } from "react";
 import { CrownIcon, TrophyIcon, EyeIcon, CommentIcon, HeartIcon, ChevronLeftIcon, ChevronRightIcon } from "../../components/Icon/rankingIcon";
 import type { TopComic, RankingSection, MetaItem } from "../../lib/types/ranking";
-<<<<<<< HEAD
-=======
-
->>>>>>> main
 const topComics: TopComic[] = [
   {
     author: "作者：星辰创作",
