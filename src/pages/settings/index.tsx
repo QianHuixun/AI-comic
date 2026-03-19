@@ -1,8 +1,6 @@
 import { useState, type ChangeEvent } from "react";
 import type { SettingsTab, AccountForm, AiState} from "../../lib/types/settings";
 import { CogIcon, UserIcon, RobotIcon } from "../../components/Icon/settings";
-import Header from "../../components/header";
-import { Footer } from "../../components/footer";
 
 const defaultAccountForm: AccountForm = {
   confirmPassword: "",

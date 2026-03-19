@@ -2,8 +2,6 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import type { TabKey, ProfileStat, ComicItem, TemplateItem } from "../../lib/types/my";
 import { UserIcon, HeartIcon, EyeIcon, StarIcon } from "../../components/Icon/my";
-import { Footer } from "../../components/footer";
-import Header from "../../components/header";
 
 const profileStats: ReadonlyArray<ProfileStat> = [
   { label: "收藏漫画", value: "12" },

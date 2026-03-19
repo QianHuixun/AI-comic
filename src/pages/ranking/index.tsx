@@ -1,8 +1,6 @@
 import { useState } from "react";
 import { CrownIcon, TrophyIcon, EyeIcon, CommentIcon, HeartIcon, ChevronLeftIcon, ChevronRightIcon } from "../../components/Icon/rankingIcon";
 import type { TopComic, RankingSection, MetaItem } from "../../lib/types/ranking";
-import { Footer } from "../../components/footer";
-import Header from "../../components/header";
 
 const topComics: TopComic[] = [
   {
