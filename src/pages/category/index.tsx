@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import {
   ChevronLeftIcon,
@@ -311,12 +312,14 @@ export default function Category() {
           <div className="mb-[30px] rounded-2xl bg-white px-[30px] py-[25px] shadow-[0_2px_15px_rgba(0,0,0,0.05)]">
             <h1 className="mb-5 flex items-center gap-3 text-2xl font-bold text-[color:var(--text-primary)]">
               <i className="fas fa-th-large text-[color:var(--primary-600)]" />
+
               漫画分类
             </h1>
             <p className="text-[15px] leading-[1.6] text-[color:var(--text-secondary)]">
               探索不同类型的漫画，找到您喜欢的内容。从热血战斗到温馨日常，从科幻冒险到浪漫爱情，这里应有尽有。
             </p>
           </div>
+
 
           <div className="mb-10 grid grid-cols-1 gap-[25px] min-[769px]:grid-cols-2 min-[993px]:grid-cols-3 min-[1201px]:grid-cols-5">
             {categoryItems.map((item) => (
@@ -348,6 +351,7 @@ export default function Category() {
               热门分类 - 热血
             </h2>
 
+
             <div className="flex flex-wrap gap-[10px]">
               {filterOptions.map((filter) => (
                 <button
@@ -367,6 +371,7 @@ export default function Category() {
             </div>
           </div>
 
+
           <div className="grid grid-cols-2 gap-[25px] min-[769px]:grid-cols-3 min-[993px]:grid-cols-4 min-[1201px]:grid-cols-5">
             {comics.map((comic) => (
               <article
@@ -374,6 +379,7 @@ export default function Category() {
                 key={comic.title}
               >
                 <div className="relative w-full overflow-hidden pt-[130%]">
+
                   <img
                     alt={comic.title}
                     className="absolute left-0 top-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
@@ -397,6 +403,7 @@ export default function Category() {
                     <i className="fas fa-user text-[13px]" />
                     {comic.author}
                   </p>
+
 
                   <div className="flex justify-between border-t border-t-[color:var(--bg-secondary)] pt-3">
                     <span className="flex items-center gap-[5px] text-[12px] text-[color:var(--text-secondary)]">
@@ -469,6 +476,7 @@ export default function Category() {
         </section>
       </main>
 
+
       <footer className="mt-10 bg-[color:var(--primary-900)] px-0 py-10 pb-5 text-white">
         <div className="mx-auto max-w-[1400px] px-5">
           <div className="mb-[30px] grid grid-cols-1 gap-10 min-[481px]:grid-cols-2 min-[769px]:grid-cols-[2fr_1fr_1fr_1fr]">
@@ -513,4 +521,5 @@ export default function Category() {
       </footer>
     </div>
   );
+
 }
