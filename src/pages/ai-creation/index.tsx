@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState, type ReactNode } from "react";
-import type { NavLink, InputTab, TemplateTab, StyleOption, TemplateCard, HistoryItem, FooterColumn } from "../../lib/types/ai-creation";
+import { useEffect, useRef, useState } from "react";
+import type { NavLink, InputTab, TemplateTab, StyleOption, TemplateCard, HistoryItem, FooterColumn, InputTabKey, TemplateTabKey, SizeKey } from "../../lib/types/ai-creation";
 import { PencilIcon, SearchIcon, SparklesIcon, GridIcon, HistoryIcon, ImageIcon, EyeIcon, StarIcon, HeartIcon } from "../../components/Icon/ai-creation";
 
 const navLinks: ReadonlyArray<NavLink> = [
