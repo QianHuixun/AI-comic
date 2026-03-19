@@ -5,23 +5,11 @@ import {
   CommentIcon,
   EyeIcon,
   HeartIcon,
-  RobotIcon,
-  SearchIcon,
   TrophyIcon,
 } from "../../components/Icon/rankingIcon";
-import { FireIcon, UserIcon, SettingsIcon, LogOutIcon, StarIcon, ChevronDownIcon } from "../../components/Icon/homeIcon";
-
-const navLinks: ReadonlyArray<{
-  active?: boolean;
-  href: string;
-  label: string;
-}> = [
-  { active: true, href: "/home", label: "首页" },
-  { href: "/category", label: "分类" },
-  { href: "/ranking", label: "排行榜" },
-  { href: "#", label: "AI创作" },
-  { href: "#", label: "论坛" },
-] as const;
+import { FireIcon, UserIcon, StarIcon } from "../../components/Icon/homeIcon";
+import { Footer } from "../../components/footer";
+import Header from "../../components/header";
 
 const carouselSlides = [
   {
@@ -347,21 +335,6 @@ const stats = [
   { label: "创作者", unit: "万+", value: "50" },
 ] as const;
 
-const footerColumns = [
-  {
-    links: ["AI创作", "漫画阅读", "社区交流", "创作者中心"],
-    title: "产品服务",
-  },
-  {
-    links: ["公司介绍", "联系方式", "隐私政策", "用户协议"],
-    title: "关于我们",
-  },
-  {
-    links: ["微信公众号", "官方微博", "Discord", "Twitter"],
-    title: "关注我们",
-  },
-] as const;
-
 function getRankingNumberClass(rank: number) {
   if (rank === 1) {
     return "bg-[linear-gradient(135deg,var(--rank-gold),#ffcc99)] text-white";
@@ -459,86 +432,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-[color:var(--bg-secondary)] font-sans leading-[1.6] text-[color:var(--text-primary)]">
-      <header className="bg-[linear-gradient(135deg,var(--primary-700),var(--primary-800))] py-5 shadow-[0_4px_20px_rgba(0,0,0,0.1)]">
-        <div className="m-0 px-5 min-[769px]:px-10">
-          <div className="flex flex-col items-center justify-between gap-5 min-[1180px]:flex-row">
-            <div className="flex items-center gap-[10px] text-[28px] font-extrabold text-white">
-              <div className="flex h-[45px] w-[45px] items-center justify-center rounded-xl bg-white text-[color:var(--primary-700)]">
-                <RobotIcon className="h-6 w-6" />
-              </div>
-              <span>AI漫画</span>
-            </div>
-
-            <div className="flex w-full items-center rounded-[50px] bg-white px-5 py-[10px] shadow-[0_4px_15px_rgba(0,0,0,0.1)] min-[769px]:w-[400px]">
-              <SearchIcon className="h-4 w-4 shrink-0 text-[color:var(--text-secondary)]" />
-              <input
-                className="min-w-0 flex-1 border-none bg-transparent px-[10px] py-[5px] text-[15px] outline-none placeholder:text-[color:var(--text-secondary)]"
-                placeholder="搜索漫画、作者..."
-                type="text"
-              />
-              <button
-                className="rounded-[25px] bg-[color:var(--secondary)] px-5 py-2 text-[14px] text-white transition-all duration-300 hover:scale-105 hover:bg-[color:var(--accent-600)]"
-                type="button"
-              >
-                搜索
-              </button>
-            </div>
-
-            <nav className="flex flex-wrap justify-center gap-[30px]">
-              {navLinks.map((link) => (
-                <a
-                  className={[
-                    "rounded-lg px-4 py-2 text-[15px] font-semibold text-white transition-all duration-300 hover:bg-white/20",
-                    link.active ? "bg-white/30" : "",
-                  ].join(" ")}
-                  href={link.href}
-                  key={link.label}
-                >
-                  {link.label}
-                </a>
-              ))}
-            </nav>
-
-            <div className="group relative">
-              <div className="flex cursor-pointer items-center gap-[10px] rounded-[30px] bg-white/10 px-3 py-2 transition-all duration-300 hover:bg-white/20">
-                <img
-                  alt="用户头像"
-                  className="h-9 w-9 rounded-full border-2 border-white/50 object-cover"
-                  src="https://picsum.photos/40/40?random=100"
-                />
-                <span className="text-sm font-semibold text-white">漫画迷</span>
-                <ChevronDownIcon className="h-3 w-3 text-white transition-transform duration-300 group-hover:rotate-180" />
-              </div>
-
-              <div className="pointer-events-none absolute right-0 top-[calc(100%+10px)] z-20 min-w-[180px] translate-y-[-10px] overflow-hidden rounded-xl bg-white opacity-0 shadow-[0_10px_40px_rgba(0,0,0,0.15)] transition-all duration-300 group-hover:pointer-events-auto group-hover:translate-y-0 group-hover:opacity-100">
-                <a
-                  className="flex items-center gap-3 px-5 py-[14px] text-[14px] text-[color:var(--text-primary)] transition-all duration-300 hover:bg-[color:var(--bg-secondary)] hover:text-[color:var(--primary-600)]"
-                  href="#"
-                >
-                  <UserIcon className="h-[18px] w-[18px] text-[color:var(--text-secondary)]" />
-                  我的
-                </a>
-                <a
-                  className="flex items-center gap-3 px-5 py-[14px] text-[14px] text-[color:var(--text-primary)] transition-all duration-300 hover:bg-[color:var(--bg-secondary)] hover:text-[color:var(--primary-600)]"
-                  href="#"
-                >
-                  <SettingsIcon className="h-[18px] w-[18px] text-[color:var(--text-secondary)]" />
-                  个人设置
-                </a>
-                <div className="mx-0 my-2 h-px bg-[color:var(--border)]" />
-                <a
-                  className="flex items-center gap-3 px-5 py-[14px] text-[14px] text-[color:var(--error)] transition-all duration-300 hover:bg-[#fef2f2] hover:text-[color:var(--error)]"
-                  href="#"
-                >
-                  <LogOutIcon className="h-[18px] w-[18px] text-[color:var(--error)]" />
-                  退出账号
-                </a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </header>
-
+      <Header></Header>
       <main className="mx-auto max-w-[1400px] px-5">
         <section className="my-[30px]">
           <div className="relative h-[400px] overflow-hidden rounded-[20px] shadow-[0_10px_40px_rgba(0,0,0,0.1)]">
@@ -767,46 +661,7 @@ export default function Home() {
           </div>
         </section>
       </main>
-
-      <footer className="mt-10 bg-[color:var(--primary-900)] px-0 py-10 pb-5 text-white">
-        <div className="mx-auto max-w-[1400px] px-5">
-          <div className="mb-[30px] grid grid-cols-1 gap-10 min-[600px]:grid-cols-2 min-[1000px]:grid-cols-[2fr_1fr_1fr_1fr]">
-            <div>
-              <div className="mb-[15px] flex items-center gap-[10px] text-[28px] font-extrabold text-white">
-                <div className="flex h-[45px] w-[45px] items-center justify-center rounded-xl bg-white text-[color:var(--primary-700)]">
-                  <RobotIcon className="h-6 w-6" />
-                </div>
-                <span>AI漫画</span>
-              </div>
-              <p className="text-[14px] leading-[1.8] text-[color:var(--text-secondary)]">
-                AI漫画是一个基于人工智能技术的漫画创作和分享平台。我们致力于用AI技术赋能创意，让每个人都能轻松创作出优质的漫画作品。
-              </p>
-            </div>
-
-            {footerColumns.map((column) => (
-              <div key={column.title}>
-                <h4 className="mb-5 text-[16px] text-white">{column.title}</h4>
-                <ul className="list-none">
-                  {column.links.map((link) => (
-                    <li className="mb-3" key={link}>
-                      <a
-                        className="text-[14px] text-[color:var(--text-secondary)] transition-colors duration-300 hover:text-[color:var(--accent-500)]"
-                        href="#"
-                      >
-                        {link}
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
-          </div>
-
-          <div className="border-t border-t-white/10 pt-5 text-center text-[14px] text-[color:var(--text-secondary)]">
-            <p>&copy; 2024 AI漫画. All rights reserved. | 备案号：XXXXXXXX</p>
-          </div>
-        </div>
-      </footer>
+      <Footer></Footer>
     </div>
   );
 }
