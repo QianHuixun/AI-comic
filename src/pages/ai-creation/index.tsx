@@ -1,8 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import type { InputTab, TemplateTab, StyleOption, TemplateCard, HistoryItem, InputTabKey, TemplateTabKey, SizeKey } from "../../lib/types/ai-creation";
 import { SparklesIcon, GridIcon, HistoryIcon, ImageIcon, EyeIcon, StarIcon, HeartIcon } from "../../components/Icon/ai-creation";
-import Header from "../../components/header";
-import { Footer } from "../../components/footer";
 
 const inputTabs: ReadonlyArray<InputTab> = [
   { key: "manual", label: "手动输入" },
@@ -202,7 +200,6 @@ export default function AICreation() {
 
   return (
     <div className="min-h-screen bg-[color:var(--bg-secondary)] font-sans leading-[1.6] text-[color:var(--text-primary)]">
-      <Header></Header>
       <main className="px-0 py-10">
         <div className="mx-auto max-w-[1400px] px-5">
           <section className="mb-10 rounded-[20px] bg-white p-5 shadow-[0_4px_20px_rgba(0,0,0,0.05)] min-[769px]:p-10">
@@ -536,7 +533,6 @@ export default function AICreation() {
           </section>
         </div>
       </main>
-      <Footer></Footer>
     </div>
   );
 }

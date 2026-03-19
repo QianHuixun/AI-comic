@@ -1,4 +1,4 @@
-import type { IconProps, PostStat } from "../../lib/types/forum";
+import type { IconProps } from "../../lib/types/forum";
 import type { ReactNode } from "react";
 
 function SvgIcon({

@@ -8,8 +8,6 @@ import {
   HeartIcon,
 } from "../../components/Icon/rankingIcon";
 import type { CategoryItem, ComicItem, BadgeTone } from "../../lib/types/category";
-import { Footer } from "../../components/footer";
-import Header from "../../components/header";
 
 const categoryItems: ReadonlyArray<CategoryItem> = [
   {
@@ -180,7 +178,6 @@ export default function Category() {
 
   return (
     <div className="min-h-screen bg-[color:var(--bg-secondary)] text-[color:var(--text-primary)]">
-      <Header></Header>
       <main className="mx-auto max-w-[1400px] px-5">
         <section className="my-[30px]">
           <div className="mb-[30px] rounded-2xl bg-white px-[30px] py-[25px] shadow-[0_2px_15px_rgba(0,0,0,0.05)]">
@@ -349,7 +346,6 @@ export default function Category() {
           </div>
         </section>
       </main>
-      <Footer></Footer>
     </div>
   );
 
