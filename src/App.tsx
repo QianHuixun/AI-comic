@@ -48,6 +48,28 @@ function App() {
     setLoading(false)
   }
 
+<<<<<<< HEAD
+  // 根据当前路径决定渲染什么内容
+  // 如果是路由页面，渲染 Routes
+    return (
+      <Routes>
+        <Route element={<Ranking />} path="/" />
+        <Route element={<LoginPage />} path="/login" />
+        <Route element={<MyPage />} path="/my" />
+        <Route element={<EditProfilePage />} path="/my/edit-profile" />
+        <Route element={<SettingsPage />} path="/my/settings" />
+        <Route element={<Ranking />} path="/ranking" />
+        {/* 添加 main 分支的新路由 */}
+        <Route element={<Home />} path="/home" />
+        <Route element={<Category />} path="/category" />
+        <Route element={<Navigate replace to="/ranking" />} path="*" />
+      </Routes>
+    )
+
+
+  // 否则渲染 Instruments 页面
+=======
+>>>>>>> main
   return (
     <main id="center">
       <h1>Instruments</h1>

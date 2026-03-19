@@ -3,12 +3,75 @@ import { useNavigate } from "react-router-dom";
 import type { AuthTab, LoginForm, RegisterForm, FeatureItem } from "../../lib/types/login";
 import { BookIcon, PhoneIcon, UserIcon, MessageIcon } from "../../components/Icon/login";
 
+<<<<<<< HEAD
+type AuthTab = "login" | "register";
+
+type NoticeState = {
+  message: string;
+  tone: "error" | "success";
+} | null;
+
+type LoginForm = {
+  password: string;
+  phone: string;
+  remember: boolean;
+};
+type RegisterForm = {
+  agreement: boolean;
+  confirmPassword: string;
+  password: string;
+  phone: string;
+};
+
+type FormErrors = Partial<
+  Record<"agreement" | "confirmPassword" | "password" | "phone", string>
+>;
+
+type FeatureItem = {
+  description: string;
+  title: string;
+};
+
+type SocialItem = {
+  badgeClass: string;
+  badgeText: string;
+  label: string;
+};
+
+type IconProps = SVGProps<SVGSVGElement>;
+
+const featureItems: FeatureItem[] = [
+  {
+    title: "海量漫画资源",
+    description: "每日持续更新热门作品、专题栏目和精选推荐。",
+  },
+  {
+    title: "多设备同步",
+    description: "阅读记录、收藏和创作偏好在不同设备之间自动同步。",
+  },
+  {
+    title: "个性化推荐",
+    description: "根据你的浏览和创作偏好，推荐更相关的内容。",
+  },
+  {
+    title: "社区互动",
+    description: "与创作者和读者交流，分享作品和阅读感受。",
+  },
+];
+
+const socialItems: SocialItem[] = [
+  { badgeText: "微", badgeClass: styles.badgeWechat, label: "微信" },
+  { badgeText: "Q", badgeClass: styles.badgeQq, label: "QQ" },
+  { badgeText: "博", badgeClass: styles.badgeWeibo, label: "微博" },
+];
+=======
 const featureItems: ReadonlyArray<FeatureItem> = [
   { description: "海量漫画资源，每日更新", icon: "book" },
   { description: "多设备同步，随时随地阅读", icon: "phone" },
   { description: "个性化推荐，发现更多精彩", icon: "user" },
   { description: "社区互动，分享阅读感受", icon: "comment" },
 ] as const;
+>>>>>>> main
 
 function cn(...classNames: Array<string | false | null | undefined>) {
   return classNames.filter(Boolean).join(" ");

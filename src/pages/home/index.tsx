@@ -1,3 +1,11 @@
+<<<<<<< HEAD
+import { useState } from 'react';
+import { Carousel } from '../../components/carousel/index';
+import { RankingSection }  from '../../components/rankingsection/index';
+import ComicSection from '../../components/comicsection';
+import {StatsFooter} from '../../components/statsfooter';
+function Home() {
+=======
 import { useEffect, useState } from "react";
 import {
   ChevronLeftIcon,
@@ -430,6 +438,7 @@ export default function Home() {
     );
   };
 
+>>>>>>> main
   return (
     <div className="min-h-screen bg-[color:var(--bg-secondary)] font-sans leading-[1.6] text-[color:var(--text-primary)]">
       <Header></Header>
