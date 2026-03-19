@@ -2,11 +2,7 @@ import { useState, type ChangeEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import type { AuthTab, LoginForm, RegisterForm, FeatureItem } from "../../lib/types/login";
 import { BookIcon, PhoneIcon, UserIcon, MessageIcon } from "../../components/Icon/login";
-<<<<<<< HEAD
-
-=======
 import { Form, Input, Checkbox, Button, message } from "antd";
->>>>>>> main
 const featureItems: ReadonlyArray<FeatureItem> = [
   { description: "海量漫画资源，每日更新", icon: "book" },
   { description: "多设备同步，随时随地阅读", icon: "phone" },
