@@ -1,4 +1,4 @@
-import { RobotIcon } from "../Icon";
+import { RobotIcon } from "../Icon/rankingIcon";
 
 export function Footer(){
     const footerColumns = [

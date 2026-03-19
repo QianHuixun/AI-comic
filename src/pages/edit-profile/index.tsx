@@ -3,215 +3,22 @@ import {
   useState,
   type ChangeEvent,
   type FormEvent,
-  type ReactNode,
-  type SVGProps,
 } from "react";
-import { Link } from "react-router-dom";
-import styles from "./index.module.css";
-
-type NavLinkItem = {
-  active?: boolean;
-  href: string;
-  label: string;
-};
-
-type FooterColumn = {
-  links: Array<{ href: string; label: string }>;
-  title: string;
-};
-
-type FormValues = {
-  bio: string;
-  email: string;
-  phone: string;
-  username: string;
-};
-
-type FormErrorKey = keyof FormValues | "avatar";
-
-type FormErrors = Partial<Record<FormErrorKey, string>>;
-
-type IconProps = SVGProps<SVGSVGElement>;
-
-const navLinks: NavLinkItem[] = [
-  { href: "/", label: "首页" },
-  { href: "#", label: "分类" },
-  { href: "/ranking", label: "排行榜" },
-  { href: "#", label: "AI创作" },
-  { href: "#", label: "论坛" },
-];
-
-const footerColumns: FooterColumn[] = [
-  {
-    title: "关于我们",
-    links: [
-      { href: "#", label: "平台介绍" },
-      { href: "#", label: "团队成员" },
-      { href: "#", label: "联系方式" },
-      { href: "#", label: "加入我们" },
-    ],
-  },
-  {
-    title: "帮助中心",
-    links: [
-      { href: "#", label: "使用指南" },
-      { href: "#", label: "常见问题" },
-      { href: "#", label: "意见反馈" },
-      { href: "#", label: "隐私政策" },
-    ],
-  },
-  {
-    title: "资源下载",
-    links: [
-      { href: "#", label: "客户端" },
-      { href: "#", label: "素材库" },
-      { href: "#", label: "模板下载" },
-      { href: "#", label: "API 文档" },
-    ],
-  },
-];
+import { Link, useNavigate } from "react-router-dom";
+import type { FormValues, FormErrors } from "../../lib/types/edit-profile";
+import { EditIcon, ArrowLeftIcon, UserIcon, CameraIcon, MailIcon, PhoneIcon, InfoIcon, SaveIcon, CloseIcon, CheckCircleIcon } from "../../components/Icon/edit-profile";
+import { Footer } from "../../components/footer";
+import Header from "../../components/header";
 
 const defaultValues: FormValues = {
-  username: "漫画作者001",
+  bio: "热爱漫画创作，喜欢AI技术",
   email: "user@example.com",
   phone: "138****8888",
-  bio: "热爱漫画创作，喜欢用 AI 把脑海里的故事拆成镜头和分镜。",
+  username: "用户名称",
 };
 
 function cn(...classNames: Array<string | false | null | undefined>) {
   return classNames.filter(Boolean).join(" ");
-}
-
-function IconBase({
-  children,
-  className,
-  viewBox = "0 0 24 24",
-  ...props
-}: IconProps & { children: ReactNode }) {
-  return (
-    <svg
-      aria-hidden="true"
-      className={className}
-      fill="none"
-      stroke="currentColor"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth="1.8"
-      viewBox={viewBox}
-      {...props}
-    >
-      {children}
-    </svg>
-  );
-}
-
-function PencilIcon(props: IconProps) {
-  return (
-    <IconBase {...props}>
-      <path d="M12 20h9" />
-      <path d="M16.5 3.5a2.12 2.12 0 1 1 3 3L7 19l-4 1 1-4Z" />
-    </IconBase>
-  );
-}
-
-function SearchIcon(props: IconProps) {
-  return (
-    <IconBase {...props}>
-      <circle cx="11" cy="11" r="7" />
-      <path d="m20 20-3.5-3.5" />
-    </IconBase>
-  );
-}
-
-function EditIcon(props: IconProps) {
-  return (
-    <IconBase {...props}>
-      <path d="m4 20 4.5-1 9-9a2.12 2.12 0 0 0-3-3l-9 9L4 20Z" />
-      <path d="M13.5 6.5 17 10" />
-    </IconBase>
-  );
-}
-
-function ArrowLeftIcon(props: IconProps) {
-  return (
-    <IconBase {...props}>
-      <path d="m12 19-7-7 7-7" />
-      <path d="M19 12H5" />
-    </IconBase>
-  );
-}
-
-function UserIcon(props: IconProps) {
-  return (
-    <IconBase {...props}>
-      <circle cx="12" cy="8" r="4" />
-      <path d="M4 20a8 8 0 0 1 16 0" />
-    </IconBase>
-  );
-}
-
-function CameraIcon(props: IconProps) {
-  return (
-    <IconBase {...props}>
-      <path d="M4 8h3l2-3h6l2 3h3v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2Z" />
-      <circle cx="12" cy="13" r="3" />
-    </IconBase>
-  );
-}
-
-function MailIcon(props: IconProps) {
-  return (
-    <IconBase {...props}>
-      <rect height="14" rx="2" width="18" x="3" y="5" />
-      <path d="m4 7 8 6 8-6" />
-    </IconBase>
-  );
-}
-
-function PhoneIcon(props: IconProps) {
-  return (
-    <IconBase {...props}>
-      <path d="M22 16.9v3a2 2 0 0 1-2.2 2A19.8 19.8 0 0 1 11.2 19a19.3 19.3 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.3 1.8.6 2.7a2 2 0 0 1-.5 2.1L8 9.7a16 16 0 0 0 6.3 6.3l1.2-1.2a2 2 0 0 1 2.1-.5c.9.3 1.8.5 2.7.6A2 2 0 0 1 22 16.9Z" />
-    </IconBase>
-  );
-}
-
-function InfoIcon(props: IconProps) {
-  return (
-    <IconBase {...props}>
-      <circle cx="12" cy="12" r="9" />
-      <path d="M12 16v-4" />
-      <path d="M12 8h.01" />
-    </IconBase>
-  );
-}
-
-function SaveIcon(props: IconProps) {
-  return (
-    <IconBase {...props}>
-      <path d="M5 21h14a1 1 0 0 0 1-1V7.4a1 1 0 0 0-.3-.7l-2.4-2.4a1 1 0 0 0-.7-.3H5a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z" />
-      <path d="M17 21v-8H7v8" />
-      <path d="M7 4v5h8" />
-    </IconBase>
-  );
-}
-
-function CloseIcon(props: IconProps) {
-  return (
-    <IconBase {...props}>
-      <path d="m18 6-12 12" />
-      <path d="m6 6 12 12" />
-    </IconBase>
-  );
-}
-
-function CheckCircleIcon(props: IconProps) {
-  return (
-    <IconBase {...props}>
-      <circle cx="12" cy="12" r="9" />
-      <path d="m8.5 12 2.5 2.5 5-5" />
-    </IconBase>
-  );
 }
 
 function validateForm(values: FormValues) {
@@ -222,29 +29,30 @@ function validateForm(values: FormValues) {
   const bio = values.bio.trim();
 
   if (!username) {
-    nextErrors.username = "请输入用户名。";
+    nextErrors.username = "请输入用户名";
   } else if (username.length < 4 || username.length > 20) {
-    nextErrors.username = "用户名长度需在 4 到 20 个字符之间。";
+    nextErrors.username = "用户名长度应为4-20个字符";
   }
 
   if (!email) {
-    nextErrors.email = "请输入邮箱地址。";
+    nextErrors.email = "请输入邮箱";
   } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-    nextErrors.email = "请输入有效的邮箱地址。";
+    nextErrors.email = "请输入有效的邮箱地址";
   }
 
   if (phone && !/^[0-9*+\-\s()]{7,20}$/.test(phone)) {
-    nextErrors.phone = "请输入有效的手机号或联系电话。";
+    nextErrors.phone = "请输入有效的手机号或联系电话";
   }
 
   if (bio.length > 200) {
-    nextErrors.bio = "个人简介最多填写 200 个字符。";
+    nextErrors.bio = "个人简介长度不能超过200个字符";
   }
 
   return nextErrors;
 }
 
 export default function EditProfilePage() {
+  const navigate = useNavigate();
   const [formValues, setFormValues] = useState<FormValues>(defaultValues);
   const [formErrors, setFormErrors] = useState<FormErrors>({});
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
@@ -262,7 +70,7 @@ export default function EditProfilePage() {
     return () => window.clearTimeout(timer);
   }, [isSuccessVisible]);
 
-  const updateField =
+  const handleChange =
     (field: keyof FormValues) =>
     (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
       const value = event.target.value;
@@ -272,15 +80,10 @@ export default function EditProfilePage() {
         [field]: value,
       }));
 
-      setFormErrors((current) => {
-        if (!current[field]) {
-          return current;
-        }
-
-        const nextErrors = { ...current };
-        delete nextErrors[field];
-        return nextErrors;
-      });
+      setFormErrors((current) => ({
+        ...current,
+        [field]: undefined,
+      }));
     };
 
   const handleAvatarChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -293,7 +96,7 @@ export default function EditProfilePage() {
     if (file.size > 2 * 1024 * 1024) {
       setFormErrors((current) => ({
         ...current,
-        avatar: "图片大小不能超过 2MB。",
+        avatar: "文件大小不能超过2MB",
       }));
       event.target.value = "";
       return;
@@ -301,272 +104,234 @@ export default function EditProfilePage() {
 
     const reader = new FileReader();
     reader.onload = () => {
-      if (typeof reader.result === "string") {
-        setAvatarPreview(reader.result);
-      }
+      setAvatarPreview(typeof reader.result === "string" ? reader.result : null);
+      setFormErrors((current) => ({
+        ...current,
+        avatar: undefined,
+      }));
     };
     reader.readAsDataURL(file);
-
-    setFormErrors((current) => {
-      if (!current.avatar) {
-        return current;
-      }
-
-      const nextErrors = { ...current };
-      delete nextErrors.avatar;
-      return nextErrors;
-    });
   };
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     const nextErrors = validateForm(formValues);
-    setFormErrors(nextErrors);
-
     if (Object.keys(nextErrors).length > 0) {
+      setFormErrors((current) => ({
+        ...current,
+        ...nextErrors,
+      }));
       setIsSuccessVisible(false);
       return;
     }
 
+    setFormErrors((current) => ({
+      ...current,
+      avatar: undefined,
+    }));
     setIsSuccessVisible(true);
   };
 
   return (
-    <div className={styles.page}>
-      <header className={styles.header}>
-        <div className={styles.headerInner}>
-          <Link className={styles.logo} to="/">
-            <span className={styles.logoIcon}>
-              <PencilIcon className="h-5 w-5" />
-            </span>
-            <span className={styles.logoText}>AI漫画</span>
-          </Link>
-
-          <div className={styles.searchBox}>
-            <SearchIcon className={styles.searchIcon} />
-            <input
-              className={styles.searchInput}
-              placeholder="搜索漫画、作者..."
-              type="text"
-            />
-            <button className={styles.searchButton} type="button">
-              搜索
-            </button>
-          </div>
-
-          <nav className={styles.navMenu}>
-            {navLinks.map((item) => (
-              <a
-                className={cn(
-                  styles.navLink,
-                  item.active && styles.navLinkActive,
-                )}
-                href={item.href}
-                key={item.label}
-              >
-                {item.label}
-              </a>
-            ))}
-          </nav>
-
-          <a className={styles.userLink} href="#">
-            登录 / 注册
-          </a>
-        </div>
-      </header>
-
-      <main className={styles.main}>
-        <div className={styles.container}>
-          <div className={styles.pageHeader}>
-            <h1 className={styles.pageTitle}>
-              <EditIcon className={styles.titleIcon} />
+    <div className="min-h-screen bg-[color:var(--bg-secondary)] text-[color:var(--text-primary)]">
+      <Header></Header>
+      <main className="px-0 py-10">
+        <div className="mx-auto max-w-[1400px] px-5">
+          <div className="mb-[30px] flex flex-col items-center justify-between gap-5 text-center min-[769px]:flex-row min-[769px]:text-left">
+            <h1 className="flex items-center gap-[10px] text-2xl font-bold text-[color:var(--text-primary)]">
+              <EditIcon className="h-6 w-6 text-[color:var(--secondary)]" />
               编辑资料
             </h1>
 
-            <Link className={styles.backLink} to="/my">
-              <ArrowLeftIcon className={styles.buttonIcon} />
-              返回我的主页
+            <Link
+              className="flex items-center gap-2 rounded-xl border-2 border-[color:var(--border)] bg-white px-5 py-[10px] text-[14px] font-semibold text-[color:var(--text-primary)] no-underline transition-all duration-300 hover:border-[color:var(--secondary)] hover:text-[color:var(--secondary)]"
+              to="/my"
+            >
+              <ArrowLeftIcon className="h-[16px] w-[16px]" />
+              返回我的
             </Link>
           </div>
 
-          <section className={styles.card}>
+          <div className="mx-auto max-w-[800px] rounded-[20px] bg-white p-10 shadow-[0_4px_20px_rgba(0,0,0,0.05)] max-[768px]:px-5 max-[768px]:py-[30px]">
             {isSuccessVisible ? (
-              <div className={styles.successMessage}>
-                <CheckCircleIcon className={styles.successIcon} />
-                资料更新成功，已保存你的最新信息。
+              <div className="mb-6 flex items-center gap-[10px] rounded-xl border-2 border-[color:var(--success)] bg-[color:var(--art-50)] p-4 text-[14px] font-semibold text-[color:var(--success)]">
+                <CheckCircleIcon className="h-[18px] w-[18px]" />
+                资料更新成功！
               </div>
             ) : null}
 
-            <div className={styles.cardHeader}>
-              <div className={styles.avatarSection}>
-                <label className={styles.avatarButton} htmlFor="avatar-upload">
-                  {avatarPreview ? (
-                    <img
-                      alt="头像预览"
-                      className={styles.avatarImage}
-                      src={avatarPreview}
-                    />
-                  ) : (
-                    <UserIcon className={styles.avatarFallback} />
-                  )}
+            <div className="mb-10 border-b border-b-[color:var(--border)] pb-[30px] text-center">
+              <div className="flex flex-col items-center gap-[15px]">
+                <label
+                  className="group block cursor-pointer"
+                  htmlFor="avatar-upload"
+                >
+                  <div className="flex h-[120px] w-[120px] items-center justify-center overflow-hidden rounded-full bg-[linear-gradient(135deg,var(--secondary),var(--accent-600))] text-white transition-all duration-300 hover:scale-105 hover:shadow-[0_8px_30px_rgba(255,153,51,0.3)] max-[480px]:h-[100px] max-[480px]:w-[100px]">
+                    {avatarPreview ? (
+                      <img
+                        alt="头像"
+                        className="h-full w-full object-cover"
+                        src={avatarPreview}
+                      />
+                    ) : (
+                      <UserIcon className="h-12 w-12 max-[480px]:h-10 max-[480px]:w-10" />
+                    )}
+                  </div>
                 </label>
 
-                <label className={styles.uploadLabel} htmlFor="avatar-upload">
-                  <CameraIcon className={styles.buttonIcon} />
+                <label
+                  className="flex cursor-pointer items-center gap-2 rounded-xl border-2 border-[color:var(--secondary)] bg-[color:var(--accent-50)] px-5 py-[10px] text-[14px] font-semibold text-[color:var(--secondary)] transition-all duration-300 hover:bg-[color:var(--secondary)] hover:text-white"
+                  htmlFor="avatar-upload"
+                >
+                  <CameraIcon className="h-[16px] w-[16px]" />
                   更换头像
                 </label>
 
                 <input
                   accept="image/*"
-                  className={styles.avatarInput}
+                  className="hidden"
                   id="avatar-upload"
                   onChange={handleAvatarChange}
                   type="file"
                 />
 
-                <p className={styles.avatarHint}>
-                  支持 JPG、PNG 格式，文件大小不超过 2MB。
-                </p>
+                <span className="text-[13px] text-[color:var(--text-secondary)]">
+                  支持 JPG、PNG 格式，大小不超过 2MB
+                </span>
 
                 {formErrors.avatar ? (
-                  <p className={styles.avatarError}>{formErrors.avatar}</p>
+                  <span className="text-[13px] text-[color:var(--error)]">
+                    {formErrors.avatar}
+                  </span>
                 ) : null}
               </div>
             </div>
 
-            <form className={styles.form} onSubmit={handleSubmit}>
-              <div className={styles.formGroup}>
-                <label className={styles.formLabel} htmlFor="username">
-                  <UserIcon className={styles.labelIcon} />
+            <form onSubmit={handleSubmit}>
+              <div className="mb-6">
+                <label className="mb-2 flex items-center gap-2 text-[14px] font-semibold text-[color:var(--text-primary)]">
+                  <UserIcon className="h-[16px] w-[16px] text-[color:var(--secondary)]" />
                   用户名
                 </label>
                 <input
-                  className={styles.formInput}
-                  id="username"
-                  onChange={updateField("username")}
+                  className={cn(
+                    "w-full rounded-xl border-2 bg-[color:var(--bg-secondary)] px-[18px] py-[14px] text-[15px] transition-all duration-300 outline-none",
+                    formErrors.username
+                      ? "border-[color:var(--error)]"
+                      : "border-[color:var(--border)] focus:border-[color:var(--secondary)] focus:bg-white focus:shadow-[0_0_0_3px_rgba(255,153,51,0.1)]",
+                  )}
+                  onChange={handleChange("username")}
                   placeholder="请输入用户名"
                   type="text"
                   value={formValues.username}
                 />
-                <p className={styles.formHint}>
-                  4 到 20 个字符，建议使用易识别的名称。
-                </p>
+                <div className="mt-2 text-[13px] text-[color:var(--text-secondary)]">
+                  4-20个字符，可包含字母、数字、下划线
+                </div>
                 {formErrors.username ? (
-                  <p className={styles.errorText}>{formErrors.username}</p>
+                  <div className="mt-2 text-[13px] text-[color:var(--error)]">
+                    {formErrors.username}
+                  </div>
                 ) : null}
               </div>
 
-              <div className={styles.formGroup}>
-                <label className={styles.formLabel} htmlFor="email">
-                  <MailIcon className={styles.labelIcon} />
+              <div className="mb-6">
+                <label className="mb-2 flex items-center gap-2 text-[14px] font-semibold text-[color:var(--text-primary)]">
+                  <MailIcon className="h-[16px] w-[16px] text-[color:var(--secondary)]" />
                   邮箱
                 </label>
                 <input
-                  className={styles.formInput}
-                  id="email"
-                  onChange={updateField("email")}
-                  placeholder="请输入邮箱地址"
+                  className={cn(
+                    "w-full rounded-xl border-2 bg-[color:var(--bg-secondary)] px-[18px] py-[14px] text-[15px] transition-all duration-300 outline-none",
+                    formErrors.email
+                      ? "border-[color:var(--error)]"
+                      : "border-[color:var(--border)] focus:border-[color:var(--secondary)] focus:bg-white focus:shadow-[0_0_0_3px_rgba(255,153,51,0.1)]",
+                  )}
+                  onChange={handleChange("email")}
+                  placeholder="请输入邮箱"
                   type="email"
                   value={formValues.email}
                 />
                 {formErrors.email ? (
-                  <p className={styles.errorText}>{formErrors.email}</p>
+                  <div className="mt-2 text-[13px] text-[color:var(--error)]">
+                    {formErrors.email}
+                  </div>
                 ) : null}
               </div>
 
-              <div className={styles.formGroup}>
-                <label className={styles.formLabel} htmlFor="phone">
-                  <PhoneIcon className={styles.labelIcon} />
-                  手机号
+              <div className="mb-6">
+                <label className="mb-2 flex items-center gap-2 text-[14px] font-semibold text-[color:var(--text-primary)]">
+                  <PhoneIcon className="h-[16px] w-[16px] text-[color:var(--secondary)]" />
+                  手机号码
                 </label>
                 <input
-                  className={styles.formInput}
-                  id="phone"
-                  onChange={updateField("phone")}
-                  placeholder="请输入手机号"
+                  className={cn(
+                    "w-full rounded-xl border-2 bg-[color:var(--bg-secondary)] px-[18px] py-[14px] text-[15px] transition-all duration-300 outline-none",
+                    formErrors.phone
+                      ? "border-[color:var(--error)]"
+                      : "border-[color:var(--border)] focus:border-[color:var(--secondary)] focus:bg-white focus:shadow-[0_0_0_3px_rgba(255,153,51,0.1)]",
+                  )}
+                  onChange={handleChange("phone")}
+                  placeholder="请输入手机号码"
                   type="tel"
                   value={formValues.phone}
                 />
                 {formErrors.phone ? (
-                  <p className={styles.errorText}>{formErrors.phone}</p>
+                  <div className="mt-2 text-[13px] text-[color:var(--error)]">
+                    {formErrors.phone}
+                  </div>
                 ) : null}
               </div>
 
-              <div className={styles.formGroup}>
-                <label className={styles.formLabel} htmlFor="bio">
-                  <InfoIcon className={styles.labelIcon} />
+              <div className="mb-6">
+                <label className="mb-2 flex items-center gap-2 text-[14px] font-semibold text-[color:var(--text-primary)]">
+                  <InfoIcon className="h-[16px] w-[16px] text-[color:var(--secondary)]" />
                   个人简介
                 </label>
                 <textarea
-                  className={cn(styles.formInput, styles.textarea)}
-                  id="bio"
-                  onChange={updateField("bio")}
-                  placeholder="介绍一下你自己..."
+                  className={cn(
+                    "min-h-[120px] w-full resize-y rounded-xl border-2 bg-[color:var(--bg-secondary)] px-[18px] py-[14px] text-[15px] transition-all duration-300 outline-none max-[480px]:px-[15px] max-[480px]:py-3 max-[480px]:text-[14px]",
+                    formErrors.bio
+                      ? "border-[color:var(--error)]"
+                      : "border-[color:var(--border)] focus:border-[color:var(--secondary)] focus:bg-white focus:shadow-[0_0_0_3px_rgba(255,153,51,0.1)]",
+                  )}
+                  onChange={handleChange("bio")}
+                  placeholder="介绍一下自己吧..."
                   value={formValues.bio}
                 />
-                <p className={styles.formHint}>
-                  最多 200 个字符，当前 {formValues.bio.trim().length} 个字符。
-                </p>
+                <div className="mt-2 text-[13px] text-[color:var(--text-secondary)]">
+                  0-200个字符
+                </div>
                 {formErrors.bio ? (
-                  <p className={styles.errorText}>{formErrors.bio}</p>
+                  <div className="mt-2 text-[13px] text-[color:var(--error)]">
+                    {formErrors.bio}
+                  </div>
                 ) : null}
               </div>
 
-              <div className={styles.formActions}>
-                <button className={styles.primaryButton} type="submit">
-                  <SaveIcon className={styles.buttonIcon} />
+              <div className="mt-10 flex gap-[15px] border-t border-t-[color:var(--border)] pt-[30px] max-[768px]:flex-col">
+                <button
+                  className="flex flex-1 items-center justify-center gap-2 rounded-xl border-none bg-[color:var(--secondary)] px-6 py-[14px] text-[15px] font-semibold text-white transition-all duration-300 hover:-translate-y-0.5 hover:bg-[color:var(--accent-600)] hover:shadow-[0_4px_15px_rgba(255,153,51,0.3)]"
+                  type="submit"
+                >
+                  <SaveIcon className="h-[16px] w-[16px]" />
                   保存修改
                 </button>
-
-                <Link className={styles.secondaryButton} to="/my">
-                  <CloseIcon className={styles.buttonIcon} />
+                <button
+                  className="flex flex-1 items-center justify-center gap-2 rounded-xl border-2 border-[color:var(--border)] bg-[color:var(--bg-secondary)] px-6 py-[14px] text-[15px] font-semibold text-[color:var(--text-primary)] transition-all duration-300 hover:border-[color:var(--secondary)] hover:text-[color:var(--secondary)]"
+                  onClick={() => navigate("/my")}
+                  type="button"
+                >
+                  <CloseIcon className="h-[16px] w-[16px]" />
                   取消
-                </Link>
+                </button>
               </div>
             </form>
-          </section>
+          </div>
         </div>
       </main>
-
-      <footer className={styles.footer}>
-        <div className={styles.footerInner}>
-          <div className={styles.footerGrid}>
-            <div className={styles.footerBrand}>
-              <Link className={styles.logo} to="/">
-                <span className={styles.logoIcon}>
-                  <PencilIcon className="h-5 w-5" />
-                </span>
-                <span className={styles.logoText}>AI漫画</span>
-              </Link>
-              <p className={styles.footerText}>
-                AI漫画是一个面向创作者的智能漫画平台，提供高质量的生成、模板复用和作品管理能力。
-              </p>
-            </div>
-
-            {footerColumns.map((column) => (
-              <div className={styles.footerColumn} key={column.title}>
-                <h2 className={styles.footerTitle}>{column.title}</h2>
-                <div className={styles.footerList}>
-                  {column.links.map((link) => (
-                    <a
-                      className={styles.footerLink}
-                      href={link.href}
-                      key={link.label}
-                    >
-                      {link.label}
-                    </a>
-                  ))}
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <div className={styles.footerBottom}>
-            &copy; 2026 AI漫画. 保留所有权利。
-          </div>
-        </div>
-      </footer>
+     <Footer></Footer>
     </div>
   );
 }

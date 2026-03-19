@@ -1,58 +1,18 @@
-import { useState, type ReactNode, type SVGProps } from "react";
-import styles from "./index.module.css";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import type { TabKey, ProfileStat, ComicItem, TemplateItem } from "../../lib/types/my";
+import { UserIcon, HeartIcon, EyeIcon, StarIcon } from "../../components/Icon/my";
+import { Footer } from "../../components/footer";
+import Header from "../../components/header";
 
-type TabKey = "comics" | "templates";
-
-type NavLinkItem = {
-  active?: boolean;
-  href: string;
-  label: string;
-};
-
-type ProfileStat = {
-  label: string;
-  value: string;
-};
-
-type ComicItem = {
-  category: string;
-  cover: string;
-  id: string;
-  title: string;
-  views: string;
-};
-
-type TemplateItem = {
-  cover: string;
-  id: string;
-  name: string;
-  rating: string;
-  views: string;
-};
-
-type FooterColumn = {
-  links: Array<{ href: string; label: string }>;
-  title: string;
-};
-
-type IconProps = SVGProps<SVGSVGElement>;
-
-const navLinks: NavLinkItem[] = [
-  { href: "/", label: "首页" },
-  { href: "#", label: "分类" },
-  { href: "/ranking", label: "排行榜" },
-  { href: "#", label: "AI创作" },
-  { href: "#", label: "论坛" },
-];
-
-const profileStats: ProfileStat[] = [
+const profileStats: ReadonlyArray<ProfileStat> = [
   { label: "收藏漫画", value: "12" },
   { label: "收藏模板", value: "8" },
   { label: "创作作品", value: "5" },
   { label: "积分", value: "128" },
-];
+] as const;
 
-const comics: ComicItem[] = [
+const comics: ReadonlyArray<ComicItem> = [
   {
     category: "科幻",
     cover: "https://picsum.photos/200/260?random=1",
@@ -78,7 +38,7 @@ const comics: ComicItem[] = [
     category: "爱情",
     cover: "https://picsum.photos/200/260?random=4",
     id: "comic-4",
-    title: "樱花树下的约定",
+    title: "樱花下的约定",
     views: "72.1万阅读",
   },
   {
@@ -95,9 +55,9 @@ const comics: ComicItem[] = [
     title: "斗破苍穹",
     views: "58.3万阅读",
   },
-];
+] as const;
 
-const templates: TemplateItem[] = [
+const templates: ReadonlyArray<TemplateItem> = [
   {
     cover: "https://picsum.photos/250/180?random=10",
     id: "template-1",
@@ -126,37 +86,7 @@ const templates: TemplateItem[] = [
     rating: "4.9",
     views: "7.2万",
   },
-];
-
-const footerColumns: FooterColumn[] = [
-  {
-    links: [
-      { href: "#", label: "平台介绍" },
-      { href: "#", label: "团队成员" },
-      { href: "#", label: "联系方式" },
-      { href: "#", label: "加入我们" },
-    ],
-    title: "关于我们",
-  },
-  {
-    links: [
-      { href: "#", label: "使用指南" },
-      { href: "#", label: "常见问题" },
-      { href: "#", label: "意见反馈" },
-      { href: "#", label: "隐私政策" },
-    ],
-    title: "帮助中心",
-  },
-  {
-    links: [
-      { href: "#", label: "客户端下载" },
-      { href: "#", label: "素材库" },
-      { href: "#", label: "模板下载" },
-      { href: "#", label: "API 文档" },
-    ],
-    title: "资源下载",
-  },
-];
+] as const;
 
 const defaultFavorites = [...comics, ...templates].reduce<
   Record<string, boolean>
@@ -169,82 +99,8 @@ function cx(...classNames: Array<string | false | null | undefined>) {
   return classNames.filter(Boolean).join(" ");
 }
 
-function SvgIcon({
-  children,
-  className,
-  viewBox = "0 0 24 24",
-  ...props
-}: IconProps & { children: ReactNode }) {
-  return (
-    <svg
-      aria-hidden="true"
-      className={className}
-      fill="none"
-      stroke="currentColor"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth="2"
-      viewBox={viewBox}
-      {...props}
-    >
-      {children}
-    </svg>
-  );
-}
-
-function PencilIcon(props: IconProps) {
-  return (
-    <SvgIcon {...props}>
-      <path d="M12 20h9" />
-      <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z" />
-    </SvgIcon>
-  );
-}
-
-function SearchIcon(props: IconProps) {
-  return (
-    <SvgIcon {...props}>
-      <circle cx="11" cy="11" r="7" />
-      <path d="m20 20-3.5-3.5" />
-    </SvgIcon>
-  );
-}
-
-function UserIcon(props: IconProps) {
-  return (
-    <SvgIcon {...props}>
-      <path d="M20 21a8 8 0 1 0-16 0" />
-      <circle cx="12" cy="8" r="4" />
-    </SvgIcon>
-  );
-}
-
-function HeartIcon(props: IconProps) {
-  return (
-    <SvgIcon {...props}>
-      <path d="m12 20-1.2-1.1C5.3 14 2 11 2 7.5A4.5 4.5 0 0 1 6.5 3C8.2 3 9.9 3.8 11 5.1 12.1 3.8 13.8 3 15.5 3A4.5 4.5 0 0 1 20 7.5c0 3.5-3.3 6.5-8.8 11.4L12 20Z" />
-    </SvgIcon>
-  );
-}
-
-function EyeIcon(props: IconProps) {
-  return (
-    <SvgIcon {...props}>
-      <path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6-10-6-10-6Z" />
-      <circle cx="12" cy="12" r="3" />
-    </SvgIcon>
-  );
-}
-
-function StarIcon(props: IconProps) {
-  return (
-    <SvgIcon {...props}>
-      <path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1 6.2L12 17.3 6.5 20.2l1-6.2L3 9.6l6.2-.9Z" />
-    </SvgIcon>
-  );
-}
-
 export default function MyPage() {
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<TabKey>("comics");
   const [favorites, setFavorites] =
     useState<Record<string, boolean>>(defaultFavorites);
@@ -257,240 +113,183 @@ export default function MyPage() {
   };
 
   return (
-    <div className={styles.page}>
-      <header className={styles.header}>
-        <div className={styles.headerInner}>
-          <a className={styles.logo} href="/">
-            <span className={styles.logoIcon}>
-              <PencilIcon className={styles.logoIconSvg} />
-            </span>
-            <span>AI漫画</span>
-          </a>
+    <div className="min-h-screen bg-[color:var(--bg-secondary)] text-[color:var(--text-primary)]">
+      <Header></Header>
+      <main className="px-0 py-10">
+        <div className="mx-auto max-w-[1400px] px-5">
+          <section className="mb-10 flex items-center gap-[30px] rounded-[20px] bg-white p-[30px] shadow-[0_4px_20px_rgba(0,0,0,0.05)] max-[992px]:flex-col max-[992px]:text-center">
+            <div className="flex h-[120px] w-[120px] items-center justify-center rounded-full bg-[linear-gradient(135deg,var(--secondary),var(--accent-600))] text-white max-[480px]:h-[100px] max-[480px]:w-[100px]">
+              <UserIcon className="h-12 w-12 max-[480px]:h-10 max-[480px]:w-10" />
+            </div>
 
-          <div className={styles.searchBox}>
-            <SearchIcon className={styles.searchIcon} />
-            <input
-              className={styles.searchInput}
-              placeholder="搜索漫画、作者..."
-              type="text"
-            />
-            <button className={styles.searchButton} type="button">
-              搜索
-            </button>
-          </div>
+            <div className="flex flex-1 flex-col gap-5">
+              <div className="text-[24px] font-bold text-[color:var(--text-primary)] max-[480px]:text-[20px]">
+                用户名称
+              </div>
 
-          <nav className={styles.navMenu}>
-            {navLinks.map((link) => (
-              <a
-                className={cx(
-                  styles.navLink,
-                  link.active && styles.navLinkActive,
-                )}
-                href={link.href}
-                key={link.label}
+              <div className="flex gap-[30px] max-[992px]:justify-center max-[480px]:gap-5">
+                {profileStats.map((stat) => (
+                  <div
+                    className="flex flex-col items-center"
+                    key={stat.label}
+                  >
+                    <div className="text-[18px] font-semibold text-[color:var(--text-primary)]">
+                      {stat.value}
+                    </div>
+                    <div className="text-[14px] text-[color:var(--text-secondary)]">
+                      {stat.label}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="ml-auto flex gap-[15px] max-[992px]:ml-0 max-[992px]:justify-center">
+              <button
+                className="rounded-xl border-2 border-[color:var(--secondary)] bg-[color:var(--secondary)] px-5 py-[10px] text-[14px] font-semibold text-white transition-all duration-300 hover:border-[color:var(--accent-600)] hover:bg-[color:var(--accent-600)]"
+                onClick={() => navigate("/my/edit-profile")}
+                type="button"
               >
-                {link.label}
-              </a>
-            ))}
-          </nav>
-
-          <a className={styles.userMenuLink} href="#">
-            登录/注册
-          </a>
-        </div>
-      </header>
-
-      <main className={styles.main}>
-        <section className={styles.profileSection}>
-          <div className={styles.profileAvatar}>
-            <UserIcon className={styles.profileAvatarIcon} />
-          </div>
-
-          <div className={styles.profileInfo}>
-            <div>
-              <h1 className={styles.profileName}>用户名</h1>
-              <p className={styles.profileSubtitle}>
-                管理你的收藏、模板和个人创作记录。
-              </p>
+                编辑资料
+              </button>
             </div>
+          </section>
 
-            <div className={styles.profileStats}>
-              {profileStats.map((stat) => (
-                <div className={styles.profileStat} key={stat.label}>
-                  <span className={styles.profileStatValue}>{stat.value}</span>
-                  <span className={styles.profileStatLabel}>{stat.label}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className={styles.profileActions}>
-            <button
-              className={cx(styles.actionButton, styles.primaryButton)}
-              type="button"
-            >
-              编辑资料
-            </button>
-          </div>
-        </section>
-
-        <section className={styles.collectionSection}>
-          <div className={styles.sectionHeading}>
-            <h2 className={styles.sectionTitle}>
-              <HeartIcon className={styles.sectionIcon} />
+          <section className="mb-10 rounded-[20px] bg-white p-[30px] shadow-[0_4px_20px_rgba(0,0,0,0.05)] max-[768px]:p-5">
+            <h2 className="mb-[30px] flex items-center gap-[10px] text-[24px] font-bold text-[color:var(--text-primary)] max-[480px]:text-[20px]">
+              <HeartIcon className="h-6 w-6 text-[color:var(--secondary)]" />
               我的收藏
             </h2>
-          </div>
 
-          <div className={styles.tabs} role="tablist">
-            <button
-              aria-selected={activeTab === "comics"}
-              className={cx(
-                styles.tab,
-                activeTab === "comics" && styles.tabActive,
-              )}
-              onClick={() => setActiveTab("comics")}
-              role="tab"
-              type="button"
-            >
-              收藏漫画
-            </button>
-            <button
-              aria-selected={activeTab === "templates"}
-              className={cx(
-                styles.tab,
-                activeTab === "templates" && styles.tabActive,
-              )}
-              onClick={() => setActiveTab("templates")}
-              role="tab"
-              type="button"
-            >
-              收藏模板
-            </button>
-          </div>
+            <div className="mb-[30px] flex gap-5 overflow-x-auto border-b-2 border-b-[color:var(--border)] pb-0 max-[768px]:pb-[10px]">
+              <button
+                className={cx(
+                  "border-b-[3px] px-6 py-3 text-[15px] font-semibold transition-all duration-300",
+                  activeTab === "comics"
+                    ? "border-b-[color:var(--secondary)] text-[color:var(--secondary)]"
+                    : "border-b-transparent text-[color:var(--text-secondary)] hover:text-[color:var(--text-primary)]",
+                )}
+                onClick={() => setActiveTab("comics")}
+                type="button"
+              >
+                收藏漫画
+              </button>
+              <button
+                className={cx(
+                  "border-b-[3px] px-6 py-3 text-[15px] font-semibold transition-all duration-300",
+                  activeTab === "templates"
+                    ? "border-b-[color:var(--secondary)] text-[color:var(--secondary)]"
+                    : "border-b-transparent text-[color:var(--text-secondary)] hover:text-[color:var(--text-primary)]",
+                )}
+                onClick={() => setActiveTab("templates")}
+                type="button"
+              >
+                收藏模板
+              </button>
+            </div>
 
-          {activeTab === "comics" ? (
-            <div className={styles.comicGrid}>
-              {comics.map((comic) => (
-                <article className={styles.collectionCard} key={comic.id}>
-                  <div className={styles.coverWrapper}>
-                    <img
-                      alt={`${comic.title}封面`}
-                      className={styles.coverImage}
-                      src={comic.cover}
-                    />
-                    <button
-                      aria-label={favorites[comic.id] ? "取消收藏" : "收藏"}
-                      className={cx(
-                        styles.favoriteButton,
-                        favorites[comic.id] && styles.favoriteButtonActive,
-                      )}
-                      onClick={() => toggleFavorite(comic.id)}
-                      type="button"
-                    >
-                      <HeartIcon className={styles.favoriteIcon} />
-                    </button>
-                  </div>
-                  <div className={styles.cardBody}>
-                    <a className={styles.cardTitle} href="#">
-                      {comic.title}
-                    </a>
-                    <div className={styles.cardMeta}>
-                      <span>{comic.category}</span>
-                      <span>{comic.views}</span>
+            {activeTab === "comics" ? (
+              <div className="grid grid-cols-[repeat(auto-fit,minmax(150px,1fr))] gap-5 min-[769px]:grid-cols-[repeat(auto-fit,minmax(200px,1fr))]">
+                {comics.map((comic) => (
+                  <article
+                    className="overflow-hidden rounded-2xl bg-[color:var(--bg-secondary)] shadow-[0_4px_15px_rgba(0,0,0,0.05)] transition-all duration-300 hover:-translate-y-[5px] hover:shadow-[0_8px_30px_rgba(0,0,0,0.1)]"
+                    key={comic.id}
+                  >
+                    <div className="relative h-[260px] w-full overflow-hidden bg-[color:var(--neutral-200)]">
+                      <img
+                        alt="漫画封面"
+                        className="h-full w-full object-cover"
+                        src={comic.cover}
+                      />
+                      <button
+                        className={cx(
+                          "absolute right-[10px] top-[10px] flex h-9 w-9 items-center justify-center rounded-full bg-white shadow-[0_2px_10px_rgba(0,0,0,0.1)] transition-all duration-300 hover:scale-110",
+                          favorites[comic.id]
+                            ? "text-[color:var(--secondary)]"
+                            : "text-[color:var(--text-secondary)] hover:text-[color:var(--secondary)]",
+                        )}
+                        onClick={() => toggleFavorite(comic.id)}
+                        type="button"
+                      >
+                        <HeartIcon className="h-4 w-4" />
+                      </button>
                     </div>
-                  </div>
-                </article>
-              ))}
-            </div>
-          ) : (
-            <div className={styles.templateGrid}>
-              {templates.map((template) => (
-                <article className={styles.collectionCard} key={template.id}>
-                  <div className={styles.templateCoverWrapper}>
-                    <img
-                      alt={`${template.name}模板封面`}
-                      className={styles.coverImage}
-                      src={template.cover}
-                    />
-                    <button
-                      aria-label={favorites[template.id] ? "取消收藏" : "收藏"}
-                      className={cx(
-                        styles.favoriteButton,
-                        favorites[template.id] && styles.favoriteButtonActive,
-                      )}
-                      onClick={() => toggleFavorite(template.id)}
-                      type="button"
-                    >
-                      <HeartIcon className={styles.favoriteIcon} />
-                    </button>
-                  </div>
-                  <div className={styles.cardBodyLarge}>
-                    <a className={styles.cardTitle} href="#">
-                      {template.name}
-                    </a>
-                    <div className={styles.templateStats}>
-                      <span className={styles.templateStat}>
-                        <EyeIcon className={styles.templateStatIcon} />
-                        {template.views}
-                      </span>
-                      <span className={styles.templateStat}>
-                        <StarIcon className={styles.templateStatIcon} />
-                        {template.rating}
-                      </span>
-                    </div>
-                    <button
-                      className={styles.useTemplateButton}
-                      onClick={() => window.alert(`使用模板：${template.name}`)}
-                      type="button"
-                    >
-                      使用此模板
-                    </button>
-                  </div>
-                </article>
-              ))}
-            </div>
-          )}
-        </section>
-      </main>
 
-      <footer className={styles.footer}>
-        <div className={styles.footerInner}>
-          <div className={styles.footerContent}>
-            <div className={styles.footerBrand}>
-              <a className={styles.logo} href="/">
-                <span className={styles.logoIcon}>
-                  <PencilIcon className={styles.logoIconSvg} />
-                </span>
-                <span>AI漫画</span>
-              </a>
-              <p className={styles.footerDescription}>
-                AI漫画是一个面向创作者的智能漫画平台，提供高质量的漫画生成、
-                模板复用和作品管理能力。
-              </p>
-            </div>
-
-            {footerColumns.map((column) => (
-              <div className={styles.footerColumn} key={column.title}>
-                <h3 className={styles.footerColumnTitle}>{column.title}</h3>
-                <ul className={styles.footerList}>
-                  {column.links.map((link) => (
-                    <li key={link.label}>
-                      <a className={styles.footerLink} href={link.href}>
-                        {link.label}
+                    <div className="p-[15px]">
+                      <a
+                        className="mb-2 block text-[16px] font-semibold text-[color:var(--text-primary)] no-underline transition-colors duration-300 hover:text-[color:var(--secondary)]"
+                        href="#"
+                      >
+                        {comic.title}
                       </a>
-                    </li>
-                  ))}
-                </ul>
+                      <div className="flex justify-between text-[14px] text-[color:var(--text-secondary)]">
+                        <span>{comic.category}</span>
+                        <span>{comic.views}</span>
+                      </div>
+                    </div>
+                  </article>
+                ))}
               </div>
-            ))}
-          </div>
+            ) : (
+              <div className="grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-[25px] min-[769px]:grid-cols-[repeat(auto-fit,minmax(250px,1fr))]">
+                {templates.map((template) => (
+                  <article
+                    className="overflow-hidden rounded-2xl bg-[color:var(--bg-secondary)] shadow-[0_4px_15px_rgba(0,0,0,0.05)] transition-all duration-300 hover:-translate-y-[5px] hover:shadow-[0_8px_30px_rgba(0,0,0,0.1)]"
+                    key={template.id}
+                  >
+                    <div className="relative h-[180px] w-full overflow-hidden bg-[color:var(--neutral-200)]">
+                      <img
+                        alt="模板"
+                        className="h-full w-full object-cover"
+                        src={template.cover}
+                      />
+                      <button
+                        className={cx(
+                          "absolute right-[10px] top-[10px] flex h-9 w-9 items-center justify-center rounded-full bg-white shadow-[0_2px_10px_rgba(0,0,0,0.1)] transition-all duration-300 hover:scale-110",
+                          favorites[template.id]
+                            ? "text-[color:var(--secondary)]"
+                            : "text-[color:var(--text-secondary)] hover:text-[color:var(--secondary)]",
+                        )}
+                        onClick={() => toggleFavorite(template.id)}
+                        type="button"
+                      >
+                        <HeartIcon className="h-4 w-4" />
+                      </button>
+                    </div>
 
-          <div className={styles.footerBottom}>
-            <p>&copy; 2026 AI漫画. 保留所有权利。</p>
-          </div>
+                    <div className="p-5">
+                      <a
+                        className="mb-2 block text-[16px] font-semibold text-[color:var(--text-primary)] no-underline transition-colors duration-300 hover:text-[color:var(--secondary)]"
+                        href="#"
+                      >
+                        {template.name}
+                      </a>
+                      <div className="mb-[15px] flex items-center gap-[15px] text-[14px] text-[color:var(--text-secondary)]">
+                        <span className="flex items-center gap-[5px]">
+                          <EyeIcon className="h-[14px] w-[14px]" />
+                          {template.views}
+                        </span>
+                        <span className="flex items-center gap-[5px]">
+                          <StarIcon className="h-[14px] w-[14px]" />
+                          {template.rating}
+                        </span>
+                      </div>
+                      <button
+                        className="w-full rounded-lg bg-[color:var(--secondary)] px-[10px] py-[10px] text-[14px] font-semibold text-white transition-all duration-300 hover:bg-[color:var(--accent-600)]"
+                        onClick={() => window.alert("使用此模板")}
+                        type="button"
+                      >
+                        使用此模板
+                      </button>
+                    </div>
+                  </article>
+                ))}
+              </div>
+            )}
+          </section>
         </div>
-      </footer>
+      </main>
+      <Footer></Footer>
     </div>
   );
 }

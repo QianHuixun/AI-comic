@@ -2,63 +2,13 @@ import {
   useEffect,
   useRef,
   useState,
-  type ReactNode,
-  type SVGProps,
 } from "react";
 
-type IconProps = SVGProps<SVGSVGElement>;
+import type { Category, ForumPost, ChatMessage, PostStat} from "../../lib/types/forum";
 
-type NavLink = {
-  active?: boolean;
-  href: string;
-  label: string;
-};
-
-type Category = {
-  key:
-    | "all"
-    | "discussion"
-    | "feedback"
-    | "share"
-    | "help"
-    | "announcement";
-  label: string;
-};
-
-type PostStat = {
-  icon: "comment" | "eye" | "heart";
-  value: string;
-};
-
-type ForumPost = {
-  author: string;
-  category: Category["key"];
-  stats: [PostStat, PostStat, PostStat];
-  time: string;
-  title: string;
-};
-
-type ChatMessage = {
-  content: string;
-  sender: string;
-  time: string;
-};
-
-type FooterColumn = {
-  links: ReadonlyArray<{
-    href: string;
-    label: string;
-  }>;
-  title: string;
-};
-
-const navLinks: ReadonlyArray<NavLink> = [
-  { href: "/", label: "首页" },
-  { href: "#", label: "分类" },
-  { href: "/ranking", label: "排行榜" },
-  { href: "#", label: "AI创作" },
-  { active: true, href: "/forum", label: "论坛" },
-] as const;
+import {  CommentsIcon, PlusIcon, EyeIcon, CommentIcon, HeartIcon, UserIcon, ChevronLeftIcon, ChevronRightIcon } from "../../components/Icon/forum";
+import Header from "../../components/header";
+import { Footer } from "../../components/footer";
 
 const categories: ReadonlyArray<Category> = [
   { key: "all", label: "全部" },
@@ -137,148 +87,7 @@ const initialChatMessages: ChatMessage[] = [
   },
 ];
 
-const footerColumns: ReadonlyArray<FooterColumn> = [
-  {
-    links: [
-      { href: "#", label: "平台介绍" },
-      { href: "#", label: "团队成员" },
-      { href: "#", label: "联系方式" },
-      { href: "#", label: "加入我们" },
-    ],
-    title: "关于我们",
-  },
-  {
-    links: [
-      { href: "#", label: "使用指南" },
-      { href: "#", label: "常见问题" },
-      { href: "#", label: "意见反馈" },
-      { href: "#", label: "隐私政策" },
-    ],
-    title: "帮助中心",
-  },
-  {
-    links: [
-      { href: "#", label: "客户端下载" },
-      { href: "#", label: "素材库" },
-      { href: "#", label: "模板下载" },
-      { href: "#", label: "API文档" },
-    ],
-    title: "资源下载",
-  },
-] as const;
-
 const paginationButtons = [1, 2, 3, 4, 5] as const;
-
-function SvgIcon({
-  children,
-  className = "",
-  viewBox = "0 0 24 24",
-  ...props
-}: IconProps & { children: ReactNode }) {
-  return (
-    <svg
-      aria-hidden="true"
-      className={className}
-      fill="none"
-      stroke="currentColor"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth="2"
-      viewBox={viewBox}
-      {...props}
-    >
-      {children}
-    </svg>
-  );
-}
-
-function PencilIcon(props: IconProps) {
-  return (
-    <SvgIcon {...props}>
-      <path d="m12 20 7-7" />
-      <path d="M18 13a2.8 2.8 0 1 0-4-4L5 18l-1 5 5-1Z" />
-      <path d="m15 6 4 4" />
-    </SvgIcon>
-  );
-}
-
-function SearchIcon(props: IconProps) {
-  return (
-    <SvgIcon {...props}>
-      <circle cx="11" cy="11" r="7" />
-      <path d="m20 20-3.5-3.5" />
-    </SvgIcon>
-  );
-}
-
-function CommentsIcon(props: IconProps) {
-  return (
-    <SvgIcon {...props}>
-      <path d="M21 15a3 3 0 0 1-3 3H8l-5 3V6a3 3 0 0 1 3-3h12a3 3 0 0 1 3 3Z" />
-      <path d="M8 8h8" />
-      <path d="M8 12h5" />
-    </SvgIcon>
-  );
-}
-
-function PlusIcon(props: IconProps) {
-  return (
-    <SvgIcon {...props}>
-      <path d="M12 5v14" />
-      <path d="M5 12h14" />
-    </SvgIcon>
-  );
-}
-
-function EyeIcon(props: IconProps) {
-  return (
-    <SvgIcon {...props}>
-      <path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6-10-6-10-6Z" />
-      <circle cx="12" cy="12" r="3" />
-    </SvgIcon>
-  );
-}
-
-function CommentIcon(props: IconProps) {
-  return (
-    <SvgIcon {...props}>
-      <path d="M21 15a3 3 0 0 1-3 3H8l-5 3V6a3 3 0 0 1 3-3h12a3 3 0 0 1 3 3Z" />
-    </SvgIcon>
-  );
-}
-
-function HeartIcon(props: IconProps) {
-  return (
-    <SvgIcon {...props}>
-      <path d="m12 20-1.2-1.1C5.3 14 2 11 2 7.5A4.5 4.5 0 0 1 6.5 3C8.2 3 9.9 3.8 11 5.1 12.1 3.8 13.8 3 15.5 3A4.5 4.5 0 0 1 20 7.5c0 3.5-3.3 6.5-8.8 11.4L12 20Z" />
-    </SvgIcon>
-  );
-}
-
-function UserIcon(props: IconProps) {
-  return (
-    <SvgIcon {...props}>
-      <path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z" />
-      <path d="M5 20a7 7 0 0 1 14 0" />
-    </SvgIcon>
-  );
-}
-
-function ChevronLeftIcon(props: IconProps) {
-  return (
-    <SvgIcon {...props}>
-      <path d="m15 18-6-6 6-6" />
-    </SvgIcon>
-  );
-}
-
-function ChevronRightIcon(props: IconProps) {
-  return (
-    <SvgIcon {...props}>
-      <path d="m9 18 6-6-6-6" />
-    </SvgIcon>
-  );
-}
 
 function getPostStatIcon(icon: PostStat["icon"]) {
   if (icon === "eye") return <EyeIcon className="h-[14px] w-[14px]" />;
@@ -335,58 +144,7 @@ export default function Forum() {
 
   return (
     <div className="min-h-screen bg-[color:var(--bg-secondary)] font-sans leading-[1.6] text-[color:var(--text-primary)]">
-      <header className="bg-[linear-gradient(135deg,var(--primary-700),var(--primary-800))] py-5 shadow-[0_4px_20px_rgba(0,0,0,0.1)]">
-        <div className="m-0 px-10">
-          <div className="flex flex-col items-center justify-between gap-5 min-[769px]:flex-row">
-            <div className="flex items-center gap-[10px] text-[28px] font-extrabold text-white">
-              <div className="flex h-[45px] w-[45px] items-center justify-center rounded-xl bg-white text-[color:var(--primary-700)]">
-                <PencilIcon className="h-6 w-6" />
-              </div>
-              <span>AI漫画</span>
-            </div>
-
-            <div className="flex w-full items-center rounded-[50px] bg-white px-5 py-[10px] shadow-[0_4px_15px_rgba(0,0,0,0.1)] min-[769px]:w-[300px] min-[993px]:w-[400px]">
-              <SearchIcon className="h-4 w-4 shrink-0 text-[color:var(--text-secondary)]" />
-              <input
-                className="min-w-0 flex-1 border-none bg-transparent px-[10px] py-[5px] text-[15px] outline-none placeholder:text-[color:var(--text-secondary)]"
-                placeholder="搜索帖子、话题..."
-                type="text"
-              />
-              <button
-                className="rounded-[25px] bg-[color:var(--secondary)] px-5 py-2 text-[14px] text-white transition-all duration-300 hover:scale-105 hover:bg-[color:var(--accent-600)]"
-                type="button"
-              >
-                搜索
-              </button>
-            </div>
-
-            <nav className="flex flex-wrap justify-center gap-[30px]">
-              {navLinks.map((link) => (
-                <a
-                  className={[
-                    "rounded-lg px-4 py-2 text-[15px] font-semibold text-white transition-all duration-300 hover:bg-white/20",
-                    link.active ? "bg-white/30" : "",
-                  ].join(" ")}
-                  href={link.href}
-                  key={link.label}
-                >
-                  {link.label}
-                </a>
-              ))}
-            </nav>
-
-            <div className="relative">
-              <a
-                className="rounded-lg px-4 py-2 text-[15px] font-semibold text-white no-underline transition-all duration-300 hover:bg-white/20"
-                href="#"
-              >
-                登录/注册
-              </a>
-            </div>
-          </div>
-        </div>
-      </header>
-
+      <Header></Header>
       <main className="px-0 py-10">
         <div className="mx-auto max-w-[1400px] px-5">
           <section>
@@ -577,48 +335,7 @@ export default function Forum() {
           </section>
         </div>
       </main>
-
-      <footer className="mt-[60px] bg-[linear-gradient(135deg,var(--primary-700),var(--primary-800))] px-0 py-[60px] pb-[30px] text-white">
-        <div className="m-0 px-10">
-          <div className="mb-10 grid grid-cols-1 gap-10 min-[769px]:grid-cols-2 min-[993px]:grid-cols-3 min-[1201px]:grid-cols-[2fr_1fr_1fr_1fr]">
-            <div>
-              <div className="mb-5 flex items-center gap-[10px] text-2xl font-extrabold text-white">
-                <div className="flex h-[45px] w-[45px] items-center justify-center rounded-xl bg-white text-[color:var(--primary-700)]">
-                  <PencilIcon className="h-6 w-6" />
-                </div>
-                <span>AI漫画</span>
-              </div>
-              <p className="mb-5 text-[14px] leading-[1.6] text-white/70">
-                AI漫画是一个基于人工智能技术的漫画创作平台，为用户提供高质量的漫画生成和创作工具。
-              </p>
-            </div>
-
-            {footerColumns.map((column) => (
-              <div key={column.title}>
-                <h4 className="mb-5 text-[16px] font-semibold text-white">
-                  {column.title}
-                </h4>
-                <ul className="list-none">
-                  {column.links.map((link) => (
-                    <li className="mb-3" key={link.label}>
-                      <a
-                        className="text-[14px] text-white/70 no-underline transition-colors duration-300 hover:text-white"
-                        href={link.href}
-                      >
-                        {link.label}
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
-          </div>
-
-          <div className="border-t border-t-white/10 pt-[30px] text-center text-[14px] text-white/70">
-            <p>&copy; 2026 AI漫画. 保留所有权利.</p>
-          </div>
-        </div>
-      </footer>
+      <Footer></Footer>
     </div>
   );
 }

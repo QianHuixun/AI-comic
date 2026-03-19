@@ -1,13 +1,5 @@
 import { useEffect, useState } from 'react'
 import { createClient } from '@supabase/supabase-js'
-import { Navigate, Route, Routes } from "react-router-dom";
-import EditProfilePage from "./pages/edit-profile";
-import LoginPage from "./pages/login";
-import MyPage from "./pages/my";
-import Ranking from "./pages/ranking";
-import SettingsPage from "./pages/settings";
-import Home from "./pages/home";
-import Category from "./pages/category";
 
 type Instrument = {
   id?: string | number | null
@@ -56,6 +48,7 @@ function App() {
     setLoading(false)
   }
 
+<<<<<<< HEAD
   // 根据当前路径决定渲染什么内容
   // 如果是路由页面，渲染 Routes
     return (
@@ -75,6 +68,8 @@ function App() {
 
 
   // 否则渲染 Instruments 页面
+=======
+>>>>>>> main
   return (
     <main id="center">
       <h1>Instruments</h1>

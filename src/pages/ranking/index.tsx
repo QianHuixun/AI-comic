@@ -1,51 +1,8 @@
-import { useState, type ReactNode, type SVGProps } from "react";
-
-type Stat = {
-  label: string;
-  value: string;
-};
-
-type TopComic = {
-  author: string;
-  cover: string;
-  rank: number;
-  stats: Stat[];
-  title: string;
-};
-
-type MetaItem = {
-  accent?: boolean;
-  icon: "comment" | "eye" | "heart";
-  value: string;
-};
-
-type RankingItem = {
-  cover: string;
-  meta: [MetaItem, MetaItem];
-  name: string;
-  rank: number;
-};
-
-type RankingSection = {
-  icon: "comments" | "eye";
-  key: "comment" | "reading";
-  title: string;
-  items: RankingItem[];
-};
-
-type IconProps = SVGProps<SVGSVGElement>;
-
-const navLinks: ReadonlyArray<{
-  active?: boolean;
-  href: string;
-  label: string;
-}> = [
-  { href: "/", label: "首页" },
-  { href: "#", label: "分类" },
-  { active: true, href: "/ranking", label: "排行榜" },
-  { href: "#", label: "AI创作" },
-  { href: "#", label: "论坛" },
-] as const;
+import { useState } from "react";
+import { CrownIcon, TrophyIcon, EyeIcon, CommentIcon, HeartIcon, ChevronLeftIcon, ChevronRightIcon } from "../../components/Icon/rankingIcon";
+import type { TopComic, RankingSection, MetaItem } from "../../lib/types/ranking";
+import { Footer } from "../../components/footer";
+import Header from "../../components/header";
 
 const topComics: TopComic[] = [
   {
@@ -302,147 +259,7 @@ const rankingSections: RankingSection[] = [
   },
 ];
 
-const footerColumns = [
-  {
-    links: [
-      { href: "/", label: "首页" },
-      { href: "#", label: "分类" },
-      { href: "/ranking", label: "排行榜" },
-      { href: "#", label: "AI创作" },
-      { href: "#", label: "论坛" },
-    ],
-    title: "快速链接",
-  },
-  {
-    links: [
-      { href: "#", label: "平台介绍" },
-      { href: "#", label: "团队成员" },
-      { href: "#", label: "联系方式" },
-      { href: "#", label: "加入我们" },
-      { href: "#", label: "隐私政策" },
-    ],
-    title: "关于我们",
-  },
-  {
-    links: [
-      { href: "#", label: "常见问题" },
-      { href: "#", label: "使用指南" },
-      { href: "#", label: "反馈建议" },
-      { href: "#", label: "版权声明" },
-      { href: "#", label: "用户协议" },
-    ],
-    title: "帮助中心",
-  },
-] as const;
-
 const paginationButtons = [1, 2, 3, 4, 5] as const;
-
-function SvgIcon({
-  children,
-  className = "",
-  viewBox = "0 0 24 24",
-  ...props
-}: IconProps & { children: ReactNode }) {
-  return (
-    <svg
-      aria-hidden="true"
-      className={className}
-      fill="none"
-      stroke="currentColor"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth="2"
-      viewBox={viewBox}
-      {...props}
-    >
-      {children}
-    </svg>
-  );
-}
-
-function RobotIcon(props: IconProps) {
-  return (
-    <SvgIcon {...props}>
-      <rect height="12" rx="3" width="14" x="5" y="7" />
-      <path d="M12 3v4" />
-      <path d="M9 12h.01" />
-      <path d="M15 12h.01" />
-      <path d="M9 16h6" />
-      <path d="M3 10h2" />
-      <path d="M19 10h2" />
-    </SvgIcon>
-  );
-}
-
-function SearchIcon(props: IconProps) {
-  return (
-    <SvgIcon {...props}>
-      <circle cx="11" cy="11" r="7" />
-      <path d="m20 20-3.5-3.5" />
-    </SvgIcon>
-  );
-}
-
-function CrownIcon(props: IconProps) {
-  return (
-    <SvgIcon {...props}>
-      <path d="m3 7 4.5 5L12 5l4.5 7L21 7l-2 12H5L3 7Z" />
-    </SvgIcon>
-  );
-}
-
-function TrophyIcon(props: IconProps) {
-  return (
-    <SvgIcon {...props}>
-      <path d="M8 21h8" />
-      <path d="M12 17v4" />
-      <path d="M8 4h8v5a4 4 0 0 1-8 0V4Z" />
-      <path d="M16 6h3a2 2 0 0 1-2 2h-1" />
-      <path d="M8 6H5a2 2 0 0 0 2 2h1" />
-    </SvgIcon>
-  );
-}
-
-function EyeIcon(props: IconProps) {
-  return (
-    <SvgIcon {...props}>
-      <path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6-10-6-10-6Z" />
-      <circle cx="12" cy="12" r="3" />
-    </SvgIcon>
-  );
-}
-
-function CommentIcon(props: IconProps) {
-  return (
-    <SvgIcon {...props}>
-      <path d="M21 15a3 3 0 0 1-3 3H8l-5 3V6a3 3 0 0 1 3-3h12a3 3 0 0 1 3 3Z" />
-    </SvgIcon>
-  );
-}
-
-function HeartIcon(props: IconProps) {
-  return (
-    <SvgIcon {...props}>
-      <path d="m12 20-1.2-1.1C5.3 14 2 11 2 7.5A4.5 4.5 0 0 1 6.5 3C8.2 3 9.9 3.8 11 5.1 12.1 3.8 13.8 3 15.5 3A4.5 4.5 0 0 1 20 7.5c0 3.5-3.3 6.5-8.8 11.4L12 20Z" />
-    </SvgIcon>
-  );
-}
-
-function ChevronLeftIcon(props: IconProps) {
-  return (
-    <SvgIcon {...props}>
-      <path d="m15 18-6-6 6-6" />
-    </SvgIcon>
-  );
-}
-
-function ChevronRightIcon(props: IconProps) {
-  return (
-    <SvgIcon {...props}>
-      <path d="m9 18 6-6-6-6" />
-    </SvgIcon>
-  );
-}
 
 function getTopCardBorderClass(rank: number) {
   if (rank === 1) return "border-2 border-[color:var(--rank-gold)]";
@@ -451,7 +268,7 @@ function getTopCardBorderClass(rank: number) {
   return "border border-[color:var(--border)]";
 }
 
-function getBadgeClass(rank: number) {
+ function getBadgeClass(rank: number) {
   if (rank === 1) {
     return "bg-[linear-gradient(135deg,var(--rank-gold),#ffcc99)]";
   }
@@ -499,6 +316,10 @@ export default function Ranking() {
 
   return (
     <div className="min-h-screen bg-[color:var(--bg-secondary)] font-sans leading-[1.6] text-[color:var(--text-primary)]">
+<<<<<<< HEAD
+=======
+      <Header></Header>
+>>>>>>> main
       <main className="mx-auto max-w-[1400px] px-5">
         <section className="my-10">
           <h2 className="mb-[25px] flex items-center gap-3 text-2xl font-bold text-[color:var(--text-primary)]">
@@ -683,6 +504,10 @@ export default function Ranking() {
           </div>
         </section>
       </main>
+<<<<<<< HEAD
+=======
+      <Footer></Footer>
+>>>>>>> main
     </div>
   );
 }
