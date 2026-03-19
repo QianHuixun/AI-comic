@@ -10,6 +10,8 @@ const Category = lazy(() => import("../pages/category"));
 const NotFound = lazy(() => import("../pages/notfound"));
 const EditProfilePage = lazy(() => import("../pages/edit-profile"));
 const Home = lazy(() => import("../pages/home"));
+const Forum = lazy(() => import("../pages/forum"))
+const AiCreation = lazy(() => import("../pages/ai-creation"))
 
 // 创建并导出路由
 const router = createBrowserRouter([
@@ -37,9 +39,14 @@ const router = createBrowserRouter([
         path: "ranking",
         element: <Ranking />,
       },
-      // {
-      //   path:
-      // },
+      {
+        path: "ai-creation",
+        element: <AiCreation />,
+      },
+      {
+        path: "forum",
+        element: <ProtectedRoute><Forum /></ProtectedRoute>,
+      },
       {
         path: "edit-profile",
         element: <ProtectedRoute><EditProfilePage /></ProtectedRoute>,
