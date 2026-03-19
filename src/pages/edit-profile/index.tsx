@@ -7,8 +7,6 @@ import {
 import { Link, useNavigate } from "react-router-dom";
 import type { FormValues, FormErrors } from "../../lib/types/edit-profile";
 import { EditIcon, ArrowLeftIcon, UserIcon, CameraIcon, MailIcon, PhoneIcon, InfoIcon, SaveIcon, CloseIcon, CheckCircleIcon } from "../../components/Icon/edit-profile";
-import { Footer } from "../../components/footer";
-import Header from "../../components/header";
 
 const defaultValues: FormValues = {
   bio: "热爱漫画创作，喜欢AI技术",
@@ -135,7 +133,6 @@ export default function EditProfilePage() {
 
   return (
     <div className="min-h-screen bg-[color:var(--bg-secondary)] text-[color:var(--text-primary)]">
-      <Header></Header>
       <main className="px-0 py-10">
         <div className="mx-auto max-w-[1400px] px-5">
           <div className="mb-[30px] flex flex-col items-center justify-between gap-5 text-center min-[769px]:flex-row min-[769px]:text-left">
@@ -331,7 +328,6 @@ export default function EditProfilePage() {
           </div>
         </div>
       </main>
-     <Footer></Footer>
     </div>
   );
 }

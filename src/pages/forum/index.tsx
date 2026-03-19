@@ -7,8 +7,6 @@ import {
 import type { Category, ForumPost, ChatMessage, PostStat} from "../../lib/types/forum";
 
 import {  CommentsIcon, PlusIcon, EyeIcon, CommentIcon, HeartIcon, UserIcon, ChevronLeftIcon, ChevronRightIcon } from "../../components/Icon/forum";
-import Header from "../../components/header";
-import { Footer } from "../../components/footer";
 
 const categories: ReadonlyArray<Category> = [
   { key: "all", label: "全部" },
@@ -144,7 +142,6 @@ export default function Forum() {
 
   return (
     <div className="min-h-screen bg-[color:var(--bg-secondary)] font-sans leading-[1.6] text-[color:var(--text-primary)]">
-      <Header></Header>
       <main className="px-0 py-10">
         <div className="mx-auto max-w-[1400px] px-5">
           <section>
@@ -335,7 +332,6 @@ export default function Forum() {
           </section>
         </div>
       </main>
-      <Footer></Footer>
     </div>
   );
 }

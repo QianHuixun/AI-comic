@@ -8,8 +8,6 @@ import {
   TrophyIcon,
 } from "../../components/Icon/rankingIcon";
 import { FireIcon, UserIcon, StarIcon } from "../../components/Icon/homeIcon";
-import { Footer } from "../../components/footer";
-import Header from "../../components/header";
 
 const carouselSlides = [
   {
@@ -432,7 +430,6 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-[color:var(--bg-secondary)] font-sans leading-[1.6] text-[color:var(--text-primary)]">
-      <Header></Header>
       <main className="mx-auto max-w-[1400px] px-5">
         <section className="my-[30px]">
           <div className="relative h-[400px] overflow-hidden rounded-[20px] shadow-[0_10px_40px_rgba(0,0,0,0.1)]">
@@ -661,7 +658,6 @@ export default function Home() {
           </div>
         </section>
       </main>
-      <Footer></Footer>
     </div>
   );
 }
