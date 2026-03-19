@@ -21,7 +21,6 @@ type LoginForm = {
   phone: string;
   remember: boolean;
 };
-
 type RegisterForm = {
   agreement: boolean;
   confirmPassword: string;

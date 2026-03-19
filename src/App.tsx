@@ -57,10 +57,7 @@ function App() {
   }
 
   // 根据当前路径决定渲染什么内容
-  const path = window.location.pathname
-
   // 如果是路由页面，渲染 Routes
-  if (path.startsWith('/my') || path === '/' || path === '/login' || path === '/ranking') {
     return (
       <Routes>
         <Route element={<Ranking />} path="/" />
@@ -75,7 +72,7 @@ function App() {
         <Route element={<Navigate replace to="/ranking" />} path="*" />
       </Routes>
     )
-  }
+
 
   // 否则渲染 Instruments 页面
   return (
