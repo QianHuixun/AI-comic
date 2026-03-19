@@ -1,5 +1,5 @@
 import { useState, type ReactNode, type SVGProps } from "react";
-import styles from "./index.module.css";
+import { Link, useNavigate } from "react-router-dom";
 
 type TabKey = "comics" | "templates";
 
@@ -37,22 +37,22 @@ type FooterColumn = {
 
 type IconProps = SVGProps<SVGSVGElement>;
 
-const navLinks: NavLinkItem[] = [
-  { href: "/", label: "首页" },
-  { href: "#", label: "分类" },
+const navLinks: ReadonlyArray<NavLinkItem> = [
+  { href: "/home", label: "首页" },
+  { href: "/category", label: "分类" },
   { href: "/ranking", label: "排行榜" },
   { href: "#", label: "AI创作" },
   { href: "#", label: "论坛" },
-];
+] as const;
 
-const profileStats: ProfileStat[] = [
+const profileStats: ReadonlyArray<ProfileStat> = [
   { label: "收藏漫画", value: "12" },
   { label: "收藏模板", value: "8" },
   { label: "创作作品", value: "5" },
   { label: "积分", value: "128" },
-];
+] as const;
 
-const comics: ComicItem[] = [
+const comics: ReadonlyArray<ComicItem> = [
   {
     category: "科幻",
     cover: "https://picsum.photos/200/260?random=1",
@@ -78,7 +78,7 @@ const comics: ComicItem[] = [
     category: "爱情",
     cover: "https://picsum.photos/200/260?random=4",
     id: "comic-4",
-    title: "樱花树下的约定",
+    title: "樱花下的约定",
     views: "72.1万阅读",
   },
   {
@@ -95,9 +95,9 @@ const comics: ComicItem[] = [
     title: "斗破苍穹",
     views: "58.3万阅读",
   },
-];
+] as const;
 
-const templates: TemplateItem[] = [
+const templates: ReadonlyArray<TemplateItem> = [
   {
     cover: "https://picsum.photos/250/180?random=10",
     id: "template-1",
@@ -126,9 +126,9 @@ const templates: TemplateItem[] = [
     rating: "4.9",
     views: "7.2万",
   },
-];
+] as const;
 
-const footerColumns: FooterColumn[] = [
+const footerColumns: ReadonlyArray<FooterColumn> = [
   {
     links: [
       { href: "#", label: "平台介绍" },
@@ -152,11 +152,11 @@ const footerColumns: FooterColumn[] = [
       { href: "#", label: "客户端下载" },
       { href: "#", label: "素材库" },
       { href: "#", label: "模板下载" },
-      { href: "#", label: "API 文档" },
+      { href: "#", label: "API文档" },
     ],
     title: "资源下载",
   },
-];
+] as const;
 
 const defaultFavorites = [...comics, ...templates].reduce<
   Record<string, boolean>
@@ -245,6 +245,7 @@ function StarIcon(props: IconProps) {
 }
 
 export default function MyPage() {
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<TabKey>("comics");
   const [favorites, setFavorites] =
     useState<Record<string, boolean>>(defaultFavorites);
@@ -257,226 +258,258 @@ export default function MyPage() {
   };
 
   return (
-    <div className={styles.page}>
-      <header className={styles.header}>
-        <div className={styles.headerInner}>
-          <a className={styles.logo} href="/">
-            <span className={styles.logoIcon}>
-              <PencilIcon className={styles.logoIconSvg} />
-            </span>
-            <span>AI漫画</span>
-          </a>
+    <div className="min-h-screen bg-[color:var(--bg-secondary)] text-[color:var(--text-primary)]">
+      <header className="bg-[linear-gradient(135deg,var(--primary-700),var(--primary-800))] px-0 py-5 shadow-[0_4px_20px_rgba(0,0,0,0.1)]">
+        <div className="m-0 px-10">
+          <div className="flex flex-col items-center justify-between gap-5 min-[769px]:flex-row">
+            <div className="flex items-center gap-[10px] text-[28px] font-extrabold text-white">
+              <div className="flex h-[45px] w-[45px] items-center justify-center rounded-xl bg-white text-[color:var(--primary-700)]">
+                <PencilIcon className="h-6 w-6" />
+              </div>
+              <span>AI漫画</span>
+            </div>
 
-          <div className={styles.searchBox}>
-            <SearchIcon className={styles.searchIcon} />
-            <input
-              className={styles.searchInput}
-              placeholder="搜索漫画、作者..."
-              type="text"
-            />
-            <button className={styles.searchButton} type="button">
-              搜索
-            </button>
-          </div>
-
-          <nav className={styles.navMenu}>
-            {navLinks.map((link) => (
-              <a
-                className={cx(
-                  styles.navLink,
-                  link.active && styles.navLinkActive,
-                )}
-                href={link.href}
-                key={link.label}
+            <div className="flex w-full items-center rounded-[50px] bg-white px-5 py-[10px] shadow-[0_4px_15px_rgba(0,0,0,0.1)] min-[769px]:w-[300px] min-[993px]:w-[400px]">
+              <input
+                className="min-w-0 flex-1 border-none bg-transparent px-[10px] py-[5px] text-[15px] outline-none placeholder:text-[color:var(--text-secondary)]"
+                placeholder="搜索漫画、作者..."
+                type="text"
+              />
+              <button
+                className="flex items-center gap-2 rounded-[25px] bg-[color:var(--secondary)] px-5 py-2 text-[14px] text-white transition-all duration-300 hover:scale-105 hover:bg-[color:var(--accent-600)]"
+                type="button"
               >
-                {link.label}
-              </a>
-            ))}
-          </nav>
+                <SearchIcon className="h-[14px] w-[14px]" />
+                搜索
+              </button>
+            </div>
 
-          <a className={styles.userMenuLink} href="#">
-            登录/注册
-          </a>
+            <nav className="flex flex-wrap justify-center gap-[30px]">
+              {navLinks.map((link) => (
+                <Link
+                  className="rounded-lg px-4 py-2 text-[15px] font-semibold text-white transition-all duration-300 hover:bg-white/20"
+                  key={link.label}
+                  to={link.href}
+                >
+                  {link.label}
+                </Link>
+              ))}
+            </nav>
+
+            <div className="relative">
+              <Link
+                className="rounded-lg px-4 py-2 text-[15px] font-semibold text-white no-underline transition-all duration-300 hover:bg-white/20"
+                to="/login"
+              >
+                登录/注册
+              </Link>
+            </div>
+          </div>
         </div>
       </header>
 
-      <main className={styles.main}>
-        <section className={styles.profileSection}>
-          <div className={styles.profileAvatar}>
-            <UserIcon className={styles.profileAvatarIcon} />
-          </div>
-
-          <div className={styles.profileInfo}>
-            <div>
-              <h1 className={styles.profileName}>用户名</h1>
-              <p className={styles.profileSubtitle}>
-                管理你的收藏、模板和个人创作记录。
-              </p>
+      <main className="px-0 py-10">
+        <div className="mx-auto max-w-[1400px] px-5">
+          <section className="mb-10 flex items-center gap-[30px] rounded-[20px] bg-white p-[30px] shadow-[0_4px_20px_rgba(0,0,0,0.05)] max-[992px]:flex-col max-[992px]:text-center">
+            <div className="flex h-[120px] w-[120px] items-center justify-center rounded-full bg-[linear-gradient(135deg,var(--secondary),var(--accent-600))] text-white max-[480px]:h-[100px] max-[480px]:w-[100px]">
+              <UserIcon className="h-12 w-12 max-[480px]:h-10 max-[480px]:w-10" />
             </div>
 
-            <div className={styles.profileStats}>
-              {profileStats.map((stat) => (
-                <div className={styles.profileStat} key={stat.label}>
-                  <span className={styles.profileStatValue}>{stat.value}</span>
-                  <span className={styles.profileStatLabel}>{stat.label}</span>
-                </div>
-              ))}
+            <div className="flex flex-1 flex-col gap-5">
+              <div className="text-[24px] font-bold text-[color:var(--text-primary)] max-[480px]:text-[20px]">
+                用户名称
+              </div>
+
+              <div className="flex gap-[30px] max-[992px]:justify-center max-[480px]:gap-5">
+                {profileStats.map((stat) => (
+                  <div
+                    className="flex flex-col items-center"
+                    key={stat.label}
+                  >
+                    <div className="text-[18px] font-semibold text-[color:var(--text-primary)]">
+                      {stat.value}
+                    </div>
+                    <div className="text-[14px] text-[color:var(--text-secondary)]">
+                      {stat.label}
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
 
-          <div className={styles.profileActions}>
-            <button
-              className={cx(styles.actionButton, styles.primaryButton)}
-              type="button"
-            >
-              编辑资料
-            </button>
-          </div>
-        </section>
+            <div className="ml-auto flex gap-[15px] max-[992px]:ml-0 max-[992px]:justify-center">
+              <button
+                className="rounded-xl border-2 border-[color:var(--secondary)] bg-[color:var(--secondary)] px-5 py-[10px] text-[14px] font-semibold text-white transition-all duration-300 hover:border-[color:var(--accent-600)] hover:bg-[color:var(--accent-600)]"
+                onClick={() => navigate("/my/edit-profile")}
+                type="button"
+              >
+                编辑资料
+              </button>
+            </div>
+          </section>
 
-        <section className={styles.collectionSection}>
-          <div className={styles.sectionHeading}>
-            <h2 className={styles.sectionTitle}>
-              <HeartIcon className={styles.sectionIcon} />
+          <section className="mb-10 rounded-[20px] bg-white p-[30px] shadow-[0_4px_20px_rgba(0,0,0,0.05)] max-[768px]:p-5">
+            <h2 className="mb-[30px] flex items-center gap-[10px] text-[24px] font-bold text-[color:var(--text-primary)] max-[480px]:text-[20px]">
+              <HeartIcon className="h-6 w-6 text-[color:var(--secondary)]" />
               我的收藏
             </h2>
-          </div>
 
-          <div className={styles.tabs} role="tablist">
-            <button
-              aria-selected={activeTab === "comics"}
-              className={cx(
-                styles.tab,
-                activeTab === "comics" && styles.tabActive,
-              )}
-              onClick={() => setActiveTab("comics")}
-              role="tab"
-              type="button"
-            >
-              收藏漫画
-            </button>
-            <button
-              aria-selected={activeTab === "templates"}
-              className={cx(
-                styles.tab,
-                activeTab === "templates" && styles.tabActive,
-              )}
-              onClick={() => setActiveTab("templates")}
-              role="tab"
-              type="button"
-            >
-              收藏模板
-            </button>
-          </div>
+            <div className="mb-[30px] flex gap-5 overflow-x-auto border-b-2 border-b-[color:var(--border)] pb-0 max-[768px]:pb-[10px]">
+              <button
+                className={cx(
+                  "border-b-[3px] px-6 py-3 text-[15px] font-semibold transition-all duration-300",
+                  activeTab === "comics"
+                    ? "border-b-[color:var(--secondary)] text-[color:var(--secondary)]"
+                    : "border-b-transparent text-[color:var(--text-secondary)] hover:text-[color:var(--text-primary)]",
+                )}
+                onClick={() => setActiveTab("comics")}
+                type="button"
+              >
+                收藏漫画
+              </button>
+              <button
+                className={cx(
+                  "border-b-[3px] px-6 py-3 text-[15px] font-semibold transition-all duration-300",
+                  activeTab === "templates"
+                    ? "border-b-[color:var(--secondary)] text-[color:var(--secondary)]"
+                    : "border-b-transparent text-[color:var(--text-secondary)] hover:text-[color:var(--text-primary)]",
+                )}
+                onClick={() => setActiveTab("templates")}
+                type="button"
+              >
+                收藏模板
+              </button>
+            </div>
 
-          {activeTab === "comics" ? (
-            <div className={styles.comicGrid}>
-              {comics.map((comic) => (
-                <article className={styles.collectionCard} key={comic.id}>
-                  <div className={styles.coverWrapper}>
-                    <img
-                      alt={`${comic.title}封面`}
-                      className={styles.coverImage}
-                      src={comic.cover}
-                    />
-                    <button
-                      aria-label={favorites[comic.id] ? "取消收藏" : "收藏"}
-                      className={cx(
-                        styles.favoriteButton,
-                        favorites[comic.id] && styles.favoriteButtonActive,
-                      )}
-                      onClick={() => toggleFavorite(comic.id)}
-                      type="button"
-                    >
-                      <HeartIcon className={styles.favoriteIcon} />
-                    </button>
-                  </div>
-                  <div className={styles.cardBody}>
-                    <a className={styles.cardTitle} href="#">
-                      {comic.title}
-                    </a>
-                    <div className={styles.cardMeta}>
-                      <span>{comic.category}</span>
-                      <span>{comic.views}</span>
+            {activeTab === "comics" ? (
+              <div className="grid grid-cols-[repeat(auto-fit,minmax(150px,1fr))] gap-5 min-[769px]:grid-cols-[repeat(auto-fit,minmax(200px,1fr))]">
+                {comics.map((comic) => (
+                  <article
+                    className="overflow-hidden rounded-2xl bg-[color:var(--bg-secondary)] shadow-[0_4px_15px_rgba(0,0,0,0.05)] transition-all duration-300 hover:-translate-y-[5px] hover:shadow-[0_8px_30px_rgba(0,0,0,0.1)]"
+                    key={comic.id}
+                  >
+                    <div className="relative h-[260px] w-full overflow-hidden bg-[color:var(--neutral-200)]">
+                      <img
+                        alt="漫画封面"
+                        className="h-full w-full object-cover"
+                        src={comic.cover}
+                      />
+                      <button
+                        className={cx(
+                          "absolute right-[10px] top-[10px] flex h-9 w-9 items-center justify-center rounded-full bg-white shadow-[0_2px_10px_rgba(0,0,0,0.1)] transition-all duration-300 hover:scale-110",
+                          favorites[comic.id]
+                            ? "text-[color:var(--secondary)]"
+                            : "text-[color:var(--text-secondary)] hover:text-[color:var(--secondary)]",
+                        )}
+                        onClick={() => toggleFavorite(comic.id)}
+                        type="button"
+                      >
+                        <HeartIcon className="h-4 w-4" />
+                      </button>
                     </div>
-                  </div>
-                </article>
-              ))}
-            </div>
-          ) : (
-            <div className={styles.templateGrid}>
-              {templates.map((template) => (
-                <article className={styles.collectionCard} key={template.id}>
-                  <div className={styles.templateCoverWrapper}>
-                    <img
-                      alt={`${template.name}模板封面`}
-                      className={styles.coverImage}
-                      src={template.cover}
-                    />
-                    <button
-                      aria-label={favorites[template.id] ? "取消收藏" : "收藏"}
-                      className={cx(
-                        styles.favoriteButton,
-                        favorites[template.id] && styles.favoriteButtonActive,
-                      )}
-                      onClick={() => toggleFavorite(template.id)}
-                      type="button"
-                    >
-                      <HeartIcon className={styles.favoriteIcon} />
-                    </button>
-                  </div>
-                  <div className={styles.cardBodyLarge}>
-                    <a className={styles.cardTitle} href="#">
-                      {template.name}
-                    </a>
-                    <div className={styles.templateStats}>
-                      <span className={styles.templateStat}>
-                        <EyeIcon className={styles.templateStatIcon} />
-                        {template.views}
-                      </span>
-                      <span className={styles.templateStat}>
-                        <StarIcon className={styles.templateStatIcon} />
-                        {template.rating}
-                      </span>
+
+                    <div className="p-[15px]">
+                      <a
+                        className="mb-2 block text-[16px] font-semibold text-[color:var(--text-primary)] no-underline transition-colors duration-300 hover:text-[color:var(--secondary)]"
+                        href="#"
+                      >
+                        {comic.title}
+                      </a>
+                      <div className="flex justify-between text-[14px] text-[color:var(--text-secondary)]">
+                        <span>{comic.category}</span>
+                        <span>{comic.views}</span>
+                      </div>
                     </div>
-                    <button
-                      className={styles.useTemplateButton}
-                      onClick={() => window.alert(`使用模板：${template.name}`)}
-                      type="button"
-                    >
-                      使用此模板
-                    </button>
-                  </div>
-                </article>
-              ))}
-            </div>
-          )}
-        </section>
+                  </article>
+                ))}
+              </div>
+            ) : (
+              <div className="grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-[25px] min-[769px]:grid-cols-[repeat(auto-fit,minmax(250px,1fr))]">
+                {templates.map((template) => (
+                  <article
+                    className="overflow-hidden rounded-2xl bg-[color:var(--bg-secondary)] shadow-[0_4px_15px_rgba(0,0,0,0.05)] transition-all duration-300 hover:-translate-y-[5px] hover:shadow-[0_8px_30px_rgba(0,0,0,0.1)]"
+                    key={template.id}
+                  >
+                    <div className="relative h-[180px] w-full overflow-hidden bg-[color:var(--neutral-200)]">
+                      <img
+                        alt="模板"
+                        className="h-full w-full object-cover"
+                        src={template.cover}
+                      />
+                      <button
+                        className={cx(
+                          "absolute right-[10px] top-[10px] flex h-9 w-9 items-center justify-center rounded-full bg-white shadow-[0_2px_10px_rgba(0,0,0,0.1)] transition-all duration-300 hover:scale-110",
+                          favorites[template.id]
+                            ? "text-[color:var(--secondary)]"
+                            : "text-[color:var(--text-secondary)] hover:text-[color:var(--secondary)]",
+                        )}
+                        onClick={() => toggleFavorite(template.id)}
+                        type="button"
+                      >
+                        <HeartIcon className="h-4 w-4" />
+                      </button>
+                    </div>
+
+                    <div className="p-5">
+                      <a
+                        className="mb-2 block text-[16px] font-semibold text-[color:var(--text-primary)] no-underline transition-colors duration-300 hover:text-[color:var(--secondary)]"
+                        href="#"
+                      >
+                        {template.name}
+                      </a>
+                      <div className="mb-[15px] flex items-center gap-[15px] text-[14px] text-[color:var(--text-secondary)]">
+                        <span className="flex items-center gap-[5px]">
+                          <EyeIcon className="h-[14px] w-[14px]" />
+                          {template.views}
+                        </span>
+                        <span className="flex items-center gap-[5px]">
+                          <StarIcon className="h-[14px] w-[14px]" />
+                          {template.rating}
+                        </span>
+                      </div>
+                      <button
+                        className="w-full rounded-lg bg-[color:var(--secondary)] px-[10px] py-[10px] text-[14px] font-semibold text-white transition-all duration-300 hover:bg-[color:var(--accent-600)]"
+                        onClick={() => window.alert("使用此模板")}
+                        type="button"
+                      >
+                        使用此模板
+                      </button>
+                    </div>
+                  </article>
+                ))}
+              </div>
+            )}
+          </section>
+        </div>
       </main>
 
-      <footer className={styles.footer}>
-        <div className={styles.footerInner}>
-          <div className={styles.footerContent}>
-            <div className={styles.footerBrand}>
-              <a className={styles.logo} href="/">
-                <span className={styles.logoIcon}>
-                  <PencilIcon className={styles.logoIconSvg} />
-                </span>
+      <footer className="mt-[60px] bg-[linear-gradient(135deg,var(--primary-700),var(--primary-800))] px-0 py-[60px] pb-[30px] text-white">
+        <div className="m-0 px-10">
+          <div className="mb-10 grid grid-cols-1 gap-10 min-[769px]:grid-cols-2 min-[993px]:grid-cols-[2fr_1fr_1fr_1fr] min-[1201px]:grid-cols-[2fr_1fr_1fr_1fr]">
+            <div>
+              <div className="mb-5 flex items-center gap-[10px] text-2xl font-extrabold text-white">
+                <div className="flex h-[45px] w-[45px] items-center justify-center rounded-xl bg-white text-[color:var(--primary-700)]">
+                  <PencilIcon className="h-6 w-6" />
+                </div>
                 <span>AI漫画</span>
-              </a>
-              <p className={styles.footerDescription}>
-                AI漫画是一个面向创作者的智能漫画平台，提供高质量的漫画生成、
-                模板复用和作品管理能力。
+              </div>
+              <p className="leading-[1.6] text-white/70">
+                AI漫画是一个基于人工智能技术的漫画创作平台，为用户提供高质量的漫画生成和创作工具。
               </p>
             </div>
 
             {footerColumns.map((column) => (
-              <div className={styles.footerColumn} key={column.title}>
-                <h3 className={styles.footerColumnTitle}>{column.title}</h3>
-                <ul className={styles.footerList}>
+              <div key={column.title}>
+                <h4 className="mb-5 text-[16px] font-semibold text-white">
+                  {column.title}
+                </h4>
+                <ul className="list-none">
                   {column.links.map((link) => (
-                    <li key={link.label}>
-                      <a className={styles.footerLink} href={link.href}>
+                    <li className="mb-3" key={link.label}>
+                      <a
+                        className="text-white/70 no-underline transition-colors duration-300 hover:text-white"
+                        href={link.href}
+                      >
                         {link.label}
                       </a>
                     </li>
@@ -486,8 +519,8 @@ export default function MyPage() {
             ))}
           </div>
 
-          <div className={styles.footerBottom}>
-            <p>&copy; 2026 AI漫画. 保留所有权利。</p>
+          <div className="border-t border-t-white/10 pt-[30px] text-center text-[14px] text-white/70">
+            <p>&copy; 2026 AI漫画. 保留所有权利.</p>
           </div>
         </div>
       </footer>
