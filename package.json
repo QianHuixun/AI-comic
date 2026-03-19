@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "start": "node ./src/service/app.ts",
+    "start": "node ./src/service/main.ts --watch",
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
