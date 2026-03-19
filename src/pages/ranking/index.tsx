@@ -316,10 +316,6 @@ export default function Ranking() {
 
   return (
     <div className="min-h-screen bg-[color:var(--bg-secondary)] font-sans leading-[1.6] text-[color:var(--text-primary)]">
-<<<<<<< HEAD
-=======
-      <Header></Header>
->>>>>>> main
       <main className="mx-auto max-w-[1400px] px-5">
         <section className="my-10">
           <h2 className="mb-[25px] flex items-center gap-3 text-2xl font-bold text-[color:var(--text-primary)]">
@@ -504,10 +500,6 @@ export default function Ranking() {
           </div>
         </section>
       </main>
-<<<<<<< HEAD
-=======
-      <Footer></Footer>
->>>>>>> main
     </div>
   );
 }

@@ -58,7 +58,6 @@ export default function SettingsPage() {
 
   return (
     <div className="min-h-screen bg-[color:var(--bg-secondary)] text-[color:var(--text-primary)]">
-      <Header></Header>
       <main className="px-0 py-10">
         <div className="mx-auto max-w-[1400px] px-5">
           <h2 className="mb-[30px] flex items-center gap-[10px] text-[24px] font-bold text-[color:var(--text-primary)] max-[480px]:text-[20px]">
@@ -373,7 +372,6 @@ export default function SettingsPage() {
           </div>
         </div>
       </main>
-      <Footer></Footer>
     </div>
   );
 }

@@ -114,7 +114,6 @@ export default function MyPage() {
 
   return (
     <div className="min-h-screen bg-[color:var(--bg-secondary)] text-[color:var(--text-primary)]">
-      <Header></Header>
       <main className="px-0 py-10">
         <div className="mx-auto max-w-[1400px] px-5">
           <section className="mb-10 flex items-center gap-[30px] rounded-[20px] bg-white p-[30px] shadow-[0_4px_20px_rgba(0,0,0,0.05)] max-[992px]:flex-col max-[992px]:text-center">
@@ -289,7 +288,6 @@ export default function MyPage() {
           </section>
         </div>
       </main>
-      <Footer></Footer>
     </div>
   );
 }
