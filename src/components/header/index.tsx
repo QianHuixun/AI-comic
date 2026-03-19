@@ -1,5 +1,4 @@
-import { useState } from 'react';
-import { RobotIcon, SearchIcon } from '../Icon';
+import { RobotIcon, SearchIcon } from '../Icon/rankingIcon';
 export const Header = () => {
   const navLinks: ReadonlyArray<{
   active?: boolean;
@@ -12,7 +11,6 @@ export const Header = () => {
   { href: "#", label: "AI创作" },
   { href: "#", label: "论坛" },
 ] as const;
-  const [dropdownOpen, setDropdownOpen] = useState(false);
   return (
    <header className=" z-[10] fixed bg-[linear-gradient(135deg,var(--primary-700),var(--primary-800))] py-5 shadow-[0_4px_20px_rgba(0,0,0,0.1)] w-[100vw]">
         <div className="m-0 px-10">

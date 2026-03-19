@@ -1,20 +1,7 @@
-import {
-  useEffect,
-  useState,
-  type ChangeEvent,
-  type FormEvent,
-  type ReactNode,
-  type SVGProps,
-} from "react";
-import { Link, useNavigate } from "react-router-dom";
-import styles from "./index.module.css";
+import { useState, type ChangeEvent, type ReactNode, type SVGProps } from "react";
+import { useNavigate } from "react-router-dom";
 
 type AuthTab = "login" | "register";
-
-type NoticeState = {
-  message: string;
-  tone: "error" | "success";
-} | null;
 
 type LoginForm = {
   password: string;
@@ -29,47 +16,19 @@ type RegisterForm = {
   phone: string;
 };
 
-type FormErrors = Partial<
-  Record<"agreement" | "confirmPassword" | "password" | "phone", string>
->;
-
 type FeatureItem = {
   description: string;
-  title: string;
-};
-
-type SocialItem = {
-  badgeClass: string;
-  badgeText: string;
-  label: string;
+  icon: "book" | "comment" | "phone" | "user";
 };
 
 type IconProps = SVGProps<SVGSVGElement>;
 
-const featureItems: FeatureItem[] = [
-  {
-    title: "海量漫画资源",
-    description: "每日持续更新热门作品、专题栏目和精选推荐。",
-  },
-  {
-    title: "多设备同步",
-    description: "阅读记录、收藏和创作偏好在不同设备之间自动同步。",
-  },
-  {
-    title: "个性化推荐",
-    description: "根据你的浏览和创作偏好，推荐更相关的内容。",
-  },
-  {
-    title: "社区互动",
-    description: "与创作者和读者交流，分享作品和阅读感受。",
-  },
-];
-
-const socialItems: SocialItem[] = [
-  { badgeText: "微", badgeClass: styles.badgeWechat, label: "微信" },
-  { badgeText: "Q", badgeClass: styles.badgeQq, label: "QQ" },
-  { badgeText: "博", badgeClass: styles.badgeWeibo, label: "微博" },
-];
+const featureItems: ReadonlyArray<FeatureItem> = [
+  { description: "海量漫画资源，每日更新", icon: "book" },
+  { description: "多设备同步，随时随地阅读", icon: "phone" },
+  { description: "个性化推荐，发现更多精彩", icon: "user" },
+  { description: "社区互动，分享阅读感受", icon: "comment" },
+] as const;
 
 function cn(...classNames: Array<string | false | null | undefined>) {
   return classNames.filter(Boolean).join(" ");
@@ -98,20 +57,11 @@ function IconBase({
   );
 }
 
-function PencilIcon(props: IconProps) {
+function BookIcon(props: IconProps) {
   return (
     <IconBase {...props}>
-      <path d="M12 20h9" />
-      <path d="M16.5 3.5a2.12 2.12 0 1 1 3 3L7 19l-4 1 1-4Z" />
-    </IconBase>
-  );
-}
-
-function ArrowLeftIcon(props: IconProps) {
-  return (
-    <IconBase {...props}>
-      <path d="m12 19-7-7 7-7" />
-      <path d="M19 12H5" />
+      <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+      <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5V4.5A2.5 2.5 0 0 1 6.5 2Z" />
     </IconBase>
   );
 }
@@ -124,30 +74,11 @@ function PhoneIcon(props: IconProps) {
   );
 }
 
-function LockIcon(props: IconProps) {
+function UserIcon(props: IconProps) {
   return (
     <IconBase {...props}>
-      <rect height="11" rx="2" width="14" x="5" y="11" />
-      <path d="M8 11V8a4 4 0 1 1 8 0v3" />
-    </IconBase>
-  );
-}
-
-function BookIcon(props: IconProps) {
-  return (
-    <IconBase {...props}>
-      <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
-      <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5V4.5A2.5 2.5 0 0 1 6.5 2Z" />
-    </IconBase>
-  );
-}
-
-function SparkIcon(props: IconProps) {
-  return (
-    <IconBase {...props}>
-      <path d="m12 3 1.7 4.3L18 9l-4.3 1.7L12 15l-1.7-4.3L6 9l4.3-1.7Z" />
-      <path d="M5 17h.01" />
-      <path d="M19 17h.01" />
+      <circle cx="12" cy="8" r="4" />
+      <path d="M4 20a8 8 0 0 1 16 0" />
     </IconBase>
   );
 }
@@ -162,81 +93,34 @@ function MessageIcon(props: IconProps) {
   );
 }
 
-function CheckCircleIcon(props: IconProps) {
-  return (
-    <IconBase {...props}>
-      <circle cx="12" cy="12" r="9" />
-      <path d="m8.5 12 2.5 2.5 5-5" />
-    </IconBase>
-  );
-}
-
-function AlertCircleIcon(props: IconProps) {
-  return (
-    <IconBase {...props}>
-      <circle cx="12" cy="12" r="9" />
-      <path d="M12 8v5" />
-      <path d="M12 16h.01" />
-    </IconBase>
-  );
-}
-
-function featureIcon(index: number) {
-  if (index === 0) {
-    return <BookIcon className="h-4 w-4" />;
+function renderFeatureIcon(icon: FeatureItem["icon"]) {
+  const className = "h-3 w-3";
+  if (icon === "book") {
+    return <BookIcon className={className} />;
   }
-
-  if (index === 1) {
-    return <PhoneIcon className="h-4 w-4" />;
+  if (icon === "phone") {
+    return <PhoneIcon className={className} />;
   }
-
-  if (index === 2) {
-    return <SparkIcon className="h-4 w-4" />;
+  if (icon === "user") {
+    return <UserIcon className={className} />;
   }
-
-  return <MessageIcon className="h-4 w-4" />;
-}
-
-function validatePhone(phone: string) {
-  return /^[0-9+\-\s()]{7,20}$/.test(phone.trim());
+  return <MessageIcon className={className} />;
 }
 
 export default function LoginPage() {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<AuthTab>("login");
-  const [notice, setNotice] = useState<NoticeState>(null);
-  const [focusedField, setFocusedField] = useState<string | null>(null);
   const [loginForm, setLoginForm] = useState<LoginForm>({
-    phone: "",
     password: "",
+    phone: "",
     remember: false,
   });
   const [registerForm, setRegisterForm] = useState<RegisterForm>({
-    phone: "",
-    password: "",
-    confirmPassword: "",
     agreement: false,
+    confirmPassword: "",
+    password: "",
+    phone: "",
   });
-  const [loginErrors, setLoginErrors] = useState<FormErrors>({});
-  const [registerErrors, setRegisterErrors] = useState<FormErrors>({});
-
-  useEffect(() => {
-    if (!notice) {
-      return undefined;
-    }
-
-    const timer = window.setTimeout(() => {
-      setNotice(null);
-    }, 3000);
-
-    return () => window.clearTimeout(timer);
-  }, [notice]);
-
-  const handleFocus = (name: string) => () => setFocusedField(name);
-
-  const handleBlur = () => {
-    setFocusedField(null);
-  };
 
   const updateLoginField =
     (field: keyof LoginForm) => (event: ChangeEvent<HTMLInputElement>) => {
@@ -249,17 +133,6 @@ export default function LoginPage() {
         ...current,
         [field]: value,
       }));
-
-      setLoginErrors((current) => {
-        if (!current.phone && !current.password) {
-          return current;
-        }
-
-        return {
-          ...current,
-          [field]: undefined,
-        };
-      });
     };
 
   const updateRegisterField =
@@ -273,460 +146,205 @@ export default function LoginPage() {
         ...current,
         [field]: value,
       }));
-
-      setRegisterErrors((current) => {
-        if (
-          !current.phone &&
-          !current.password &&
-          !current.confirmPassword &&
-          !current.agreement
-        ) {
-          return current;
-        }
-
-        return {
-          ...current,
-          [field]: undefined,
-        };
-      });
     };
 
-  const handleLoginSubmit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-
-    const nextErrors: FormErrors = {};
-
-    if (!loginForm.phone.trim()) {
-      nextErrors.phone = "请输入手机号。";
-    } else if (!validatePhone(loginForm.phone)) {
-      nextErrors.phone = "请输入有效的手机号。";
-    }
-
-    if (!loginForm.password.trim()) {
-      nextErrors.password = "请输入密码。";
-    }
-
-    setLoginErrors(nextErrors);
-
-    if (Object.keys(nextErrors).length > 0) {
-      setNotice({
-        tone: "error",
-        message: "登录失败，请检查手机号和密码是否填写完整。",
-      });
-      return;
-    }
-
-    setNotice({
-      tone: "success",
-      message: "登录成功，正在跳转首页。",
-    });
-
-    window.setTimeout(() => {
-      navigate("/");
-    }, 900);
-  };
-
-  const handleRegisterSubmit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-
-    const nextErrors: FormErrors = {};
-
-    if (!registerForm.phone.trim()) {
-      nextErrors.phone = "请输入手机号。";
-    } else if (!validatePhone(registerForm.phone)) {
-      nextErrors.phone = "请输入有效的手机号。";
-    }
-
-    if (!registerForm.password.trim()) {
-      nextErrors.password = "请设置密码。";
-    } else if (registerForm.password.trim().length < 8) {
-      nextErrors.password = "密码至少需要 8 位字符。";
-    }
-
-    if (!registerForm.confirmPassword.trim()) {
-      nextErrors.confirmPassword = "请再次输入密码。";
-    } else if (registerForm.confirmPassword !== registerForm.password) {
-      nextErrors.confirmPassword = "两次输入的密码不一致。";
-    }
-
-    if (!registerForm.agreement) {
-      nextErrors.agreement = "请先勾选用户协议与隐私政策。";
-    }
-
-    setRegisterErrors(nextErrors);
-
-    if (Object.keys(nextErrors).length > 0) {
-      setNotice({
-        tone: "error",
-        message: "注册失败，请先修正表单中的问题。",
-      });
-      return;
-    }
-
-    setNotice({
-      tone: "success",
-      message: "注册成功，正在跳转首页。",
-    });
-
-    window.setTimeout(() => {
-      navigate("/");
-    }, 900);
-  };
-
   return (
-    <div className={styles.page}>
-      <div className={styles.shell}>
-        <div className={styles.brandBar}>
-          <Link className={styles.logo} to="/">
-            <span className={styles.logoIcon}>
-              <PencilIcon className="h-5 w-5" />
-            </span>
-            <span className={styles.logoText}>AI漫画</span>
-          </Link>
+    <div className="flex min-h-screen items-center justify-center bg-[color:var(--bg-secondary)] px-5 py-10 text-[color:var(--text-primary)]">
+      <div className="mx-auto w-full max-w-[1400px]">
+        <div className="mx-auto grid w-full max-w-[500px] overflow-hidden rounded-[20px] bg-white shadow-[0_10px_50px_rgba(0,0,0,0.1)] min-[993px]:max-w-[900px] min-[993px]:grid-cols-2">
+          <div className="relative hidden items-center justify-center overflow-hidden bg-[linear-gradient(135deg,var(--primary-700),var(--primary-800))] px-10 py-10 min-[993px]:flex">
+            <div
+              className="absolute inset-0 bg-cover bg-center opacity-20"
+              style={{
+                backgroundImage:
+                  'url("https://picsum.photos/600/800?random=100")',
+              }}
+            />
 
-          <Link className={styles.backLink} to="/">
-            <ArrowLeftIcon className="mr-1 inline h-4 w-4" />
-            返回首页
-          </Link>
-        </div>
+            <div className="relative z-[1] text-center text-white">
+              <h2 className="mb-5 text-[32px] font-extrabold">
+                欢迎来到 AI漫画
+              </h2>
+              <p className="mb-10 text-[16px] opacity-90">
+                探索无限精彩的漫画世界，开启您的阅读之旅
+              </p>
 
-        <section className={styles.card}>
-          <div className={styles.visualPanel}>
-            <div className={styles.visualInner}>
-              <div className={styles.heroBlock}>
-                <span className={styles.eyebrow}>WELCOME</span>
-                <h1 className={styles.heroTitle}>欢迎来到 AI漫画</h1>
-                <p className={styles.heroText}>
-                  探索无限精彩的漫画世界，开始你的阅读、收藏和创作旅程。
-                </p>
-              </div>
-
-              <div className={styles.featureList}>
-                {featureItems.map((item, index) => (
-                  <article className={styles.featureItem} key={item.title}>
-                    <div className={styles.featureIcon}>
-                      {featureIcon(index)}
-                    </div>
-                    <div>
-                      <h2 className={styles.featureTitle}>{item.title}</h2>
-                      <p className={styles.featureText}>{item.description}</p>
-                    </div>
-                  </article>
+              <ul className="list-none text-left">
+                {featureItems.map((item) => (
+                  <li
+                    className="mb-5 flex items-center gap-[15px] text-[14px] opacity-90"
+                    key={item.description}
+                  >
+                    <span className="flex h-6 w-6 items-center justify-center rounded-full bg-white/20">
+                      {renderFeatureIcon(item.icon)}
+                    </span>
+                    <span>{item.description}</span>
+                  </li>
                 ))}
-              </div>
+              </ul>
             </div>
           </div>
 
-          <div className={styles.formPanel}>
-            <div className={styles.formHeader}>
-              <h2 className={styles.formTitle}>
-                {activeTab === "login" ? "账号登录" : "创建账号"}
+          <div className="px-5 py-[30px] min-[769px]:px-[30px] min-[769px]:py-10 min-[993px]:px-[50px] min-[993px]:py-[60px]">
+            <div className="mb-10 text-center">
+              <h2 className="mb-[10px] text-[24px] font-bold text-[color:var(--text-primary)] min-[769px]:text-[28px]">
+                账号登录
               </h2>
-              <p className={styles.formSubtitle}>
-                {activeTab === "login"
-                  ? "登录后即可继续你的阅读和创作进度。"
-                  : "注册后可同步收藏、模板和 AI 生成偏好。"}
+              <p className="text-[14px] text-[color:var(--text-secondary)]">
+                登录后享受更多优质内容
               </p>
             </div>
 
-            <div className={styles.tabs} role="tablist">
-              <button
-                aria-selected={activeTab === "login"}
-                className={cn(
-                  styles.tabButton,
-                  activeTab === "login" && styles.tabButtonActive,
-                )}
-                onClick={() => {
-                  setActiveTab("login");
-                  setNotice(null);
-                }}
-                role="tab"
-                type="button"
-              >
-                登录
-              </button>
-
-              <button
-                aria-selected={activeTab === "register"}
-                className={cn(
-                  styles.tabButton,
-                  activeTab === "register" && styles.tabButtonActive,
-                )}
-                onClick={() => {
-                  setActiveTab("register");
-                  setNotice(null);
-                }}
-                role="tab"
-                type="button"
-              >
-                注册
-              </button>
+            <div className="mb-[30px] flex border-b border-b-[color:var(--border)]">
+              {(["login", "register"] as const).map((tab) => (
+                <button
+                  className={cn(
+                    "flex-1 border-b-2 border-b-transparent px-0 py-[15px] text-center text-[16px] font-semibold transition-all duration-300",
+                    activeTab === tab
+                      ? "border-b-[color:var(--primary-600)] text-[color:var(--primary-600)]"
+                      : "text-[color:var(--text-secondary)]",
+                  )}
+                  key={tab}
+                  onClick={() => setActiveTab(tab)}
+                  type="button"
+                >
+                  {tab === "login" ? "登录" : "注册"}
+                </button>
+              ))}
             </div>
 
-            {notice ? (
-              <div
-                className={cn(
-                  styles.notice,
-                  notice.tone === "success"
-                    ? styles.noticeSuccess
-                    : styles.noticeError,
-                )}
-              >
-                {notice.tone === "success" ? (
-                  <CheckCircleIcon className={styles.noticeIcon} />
-                ) : (
-                  <AlertCircleIcon className={styles.noticeIcon} />
-                )}
-                {notice.message}
-              </div>
-            ) : null}
-
             {activeTab === "login" ? (
-              <form className={styles.form} onSubmit={handleLoginSubmit}>
-                <div className={styles.fieldGroup}>
-                  <label className={styles.fieldLabel} htmlFor="login-phone">
+              <div>
+                <div className="mb-5">
+                  <label className="mb-2 block text-[14px] font-semibold text-[color:var(--text-primary)]">
                     手机号
                   </label>
-                  <div
-                    className={cn(
-                      styles.fieldWrap,
-                      focusedField === "login-phone" && styles.fieldWrapFocused,
-                    )}
-                  >
-                    <PhoneIcon className={styles.fieldIcon} />
-                    <input
-                      className={styles.fieldInput}
-                      id="login-phone"
-                      onBlur={handleBlur}
-                      onChange={updateLoginField("phone")}
-                      onFocus={handleFocus("login-phone")}
-                      placeholder="请输入手机号"
-                      type="tel"
-                      value={loginForm.phone}
-                    />
-                  </div>
-                  {loginErrors.phone ? (
-                    <p className={styles.errorText}>{loginErrors.phone}</p>
-                  ) : null}
+                  <input
+                    className="w-full rounded-[10px] border-2 border-[color:var(--border)] px-4 py-3 text-[15px] transition-all duration-300 outline-none placeholder:text-[color:var(--text-secondary)] focus:border-[color:var(--primary-500)] focus:shadow-[0_0_0_3px_rgba(96,96,96,0.1)]"
+                    onChange={updateLoginField("phone")}
+                    placeholder="请输入手机号"
+                    type="text"
+                    value={loginForm.phone}
+                  />
                 </div>
 
-                <div className={styles.fieldGroup}>
-                  <label className={styles.fieldLabel} htmlFor="login-password">
+                <div className="mb-5">
+                  <label className="mb-2 block text-[14px] font-semibold text-[color:var(--text-primary)]">
                     密码
                   </label>
-                  <div
-                    className={cn(
-                      styles.fieldWrap,
-                      focusedField === "login-password" &&
-                        styles.fieldWrapFocused,
-                    )}
-                  >
-                    <LockIcon className={styles.fieldIcon} />
-                    <input
-                      className={styles.fieldInput}
-                      id="login-password"
-                      onBlur={handleBlur}
-                      onChange={updateLoginField("password")}
-                      onFocus={handleFocus("login-password")}
-                      placeholder="请输入密码"
-                      type="password"
-                      value={loginForm.password}
-                    />
-                  </div>
-                  {loginErrors.password ? (
-                    <p className={styles.errorText}>{loginErrors.password}</p>
-                  ) : null}
+                  <input
+                    className="w-full rounded-[10px] border-2 border-[color:var(--border)] px-4 py-3 text-[15px] transition-all duration-300 outline-none placeholder:text-[color:var(--text-secondary)] focus:border-[color:var(--primary-500)] focus:shadow-[0_0_0_3px_rgba(96,96,96,0.1)]"
+                    onChange={updateLoginField("password")}
+                    placeholder="请输入密码"
+                    type="password"
+                    value={loginForm.password}
+                  />
                 </div>
 
-                <div className={styles.row}>
-                  <label className={styles.checkbox}>
+                <div className="mb-[30px] flex items-center justify-between text-[14px]">
+                  <label className="flex cursor-pointer items-center gap-2">
                     <input
                       checked={loginForm.remember}
-                      className={styles.checkboxInput}
+                      className="h-4 w-4 accent-[color:var(--primary-600)]"
                       onChange={updateLoginField("remember")}
                       type="checkbox"
                     />
-                    记住我
+                    <span>记住我</span>
                   </label>
 
-                  <a className={styles.link} href="#">
+                  <a
+                    className="text-[color:var(--primary-600)] no-underline transition-colors duration-300 hover:text-[color:var(--primary-700)] hover:underline"
+                    href="#"
+                  >
                     忘记密码？
                   </a>
                 </div>
 
-                <button className={styles.submitButton} type="submit">
-                  <CheckCircleIcon className={styles.buttonIcon} />
+                <button
+                  className="mb-5 w-full rounded-[10px] bg-[linear-gradient(135deg,var(--primary-600),var(--primary-700))] px-[14px] py-[14px] text-[16px] font-semibold text-white transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_4px_15px_rgba(0,0,0,0.1)]"
+                  onClick={() => navigate("/home")}
+                  type="button"
+                >
                   登录
                 </button>
-
-                <div className={styles.divider}>或使用以下方式登录</div>
-
-                <div className={styles.socialGrid}>
-                  {socialItems.map((item) => (
-                    <button
-                      className={styles.socialButton}
-                      key={item.label}
-                      type="button"
-                    >
-                      <span className={cn(styles.socialBadge, item.badgeClass)}>
-                        {item.badgeText}
-                      </span>
-                      {item.label}
-                    </button>
-                  ))}
-                </div>
-
-                <p className={styles.tabFootnote}>
-                  还没有账号？
-                  <button
-                    className={styles.tabSwitchLink}
-                    onClick={() => setActiveTab("register")}
-                    type="button"
-                  >
-                    立即注册
-                  </button>
-                </p>
-              </form>
+              </div>
             ) : (
-              <form className={styles.form} onSubmit={handleRegisterSubmit}>
-                <div className={styles.fieldGroup}>
-                  <label className={styles.fieldLabel} htmlFor="register-phone">
+              <div>
+                <div className="mb-5">
+                  <label className="mb-2 block text-[14px] font-semibold text-[color:var(--text-primary)]">
                     手机号
                   </label>
-                  <div
-                    className={cn(
-                      styles.fieldWrap,
-                      focusedField === "register-phone" &&
-                        styles.fieldWrapFocused,
-                    )}
-                  >
-                    <PhoneIcon className={styles.fieldIcon} />
-                    <input
-                      className={styles.fieldInput}
-                      id="register-phone"
-                      onBlur={handleBlur}
-                      onChange={updateRegisterField("phone")}
-                      onFocus={handleFocus("register-phone")}
-                      placeholder="请输入手机号"
-                      type="tel"
-                      value={registerForm.phone}
-                    />
-                  </div>
-                  {registerErrors.phone ? (
-                    <p className={styles.errorText}>{registerErrors.phone}</p>
-                  ) : null}
+                  <input
+                    className="w-full rounded-[10px] border-2 border-[color:var(--border)] px-4 py-3 text-[15px] transition-all duration-300 outline-none placeholder:text-[color:var(--text-secondary)] focus:border-[color:var(--primary-500)] focus:shadow-[0_0_0_3px_rgba(96,96,96,0.1)]"
+                    onChange={updateRegisterField("phone")}
+                    placeholder="请输入手机号"
+                    type="tel"
+                    value={registerForm.phone}
+                  />
                 </div>
 
-                <div className={styles.fieldGroup}>
-                  <label
-                    className={styles.fieldLabel}
-                    htmlFor="register-password"
-                  >
+                <div className="mb-5">
+                  <label className="mb-2 block text-[14px] font-semibold text-[color:var(--text-primary)]">
                     设置密码
                   </label>
-                  <div
-                    className={cn(
-                      styles.fieldWrap,
-                      focusedField === "register-password" &&
-                        styles.fieldWrapFocused,
-                    )}
-                  >
-                    <LockIcon className={styles.fieldIcon} />
-                    <input
-                      className={styles.fieldInput}
-                      id="register-password"
-                      onBlur={handleBlur}
-                      onChange={updateRegisterField("password")}
-                      onFocus={handleFocus("register-password")}
-                      placeholder="请设置 8-20 位密码"
-                      type="password"
-                      value={registerForm.password}
-                    />
-                  </div>
-                  <p className={styles.helperText}>
-                    建议使用字母、数字和符号组合。
-                  </p>
-                  {registerErrors.password ? (
-                    <p className={styles.errorText}>
-                      {registerErrors.password}
-                    </p>
-                  ) : null}
+                  <input
+                    className="w-full rounded-[10px] border-2 border-[color:var(--border)] px-4 py-3 text-[15px] transition-all duration-300 outline-none placeholder:text-[color:var(--text-secondary)] focus:border-[color:var(--primary-500)] focus:shadow-[0_0_0_3px_rgba(96,96,96,0.1)]"
+                    onChange={updateRegisterField("password")}
+                    placeholder="请设置6-20位密码"
+                    type="password"
+                    value={registerForm.password}
+                  />
                 </div>
 
-                <div className={styles.fieldGroup}>
-                  <label
-                    className={styles.fieldLabel}
-                    htmlFor="register-confirm-password"
-                  >
+                <div className="mb-5">
+                  <label className="mb-2 block text-[14px] font-semibold text-[color:var(--text-primary)]">
                     确认密码
                   </label>
-                  <div
-                    className={cn(
-                      styles.fieldWrap,
-                      focusedField === "register-confirm-password" &&
-                        styles.fieldWrapFocused,
-                    )}
-                  >
-                    <LockIcon className={styles.fieldIcon} />
-                    <input
-                      className={styles.fieldInput}
-                      id="register-confirm-password"
-                      onBlur={handleBlur}
-                      onChange={updateRegisterField("confirmPassword")}
-                      onFocus={handleFocus("register-confirm-password")}
-                      placeholder="请再次输入密码"
-                      type="password"
-                      value={registerForm.confirmPassword}
-                    />
-                  </div>
-                  {registerErrors.confirmPassword ? (
-                    <p className={styles.errorText}>
-                      {registerErrors.confirmPassword}
-                    </p>
-                  ) : null}
+                  <input
+                    className="w-full rounded-[10px] border-2 border-[color:var(--border)] px-4 py-3 text-[15px] transition-all duration-300 outline-none placeholder:text-[color:var(--text-secondary)] focus:border-[color:var(--primary-500)] focus:shadow-[0_0_0_3px_rgba(96,96,96,0.1)]"
+                    onChange={updateRegisterField("confirmPassword")}
+                    placeholder="请再次输入密码"
+                    type="password"
+                    value={registerForm.confirmPassword}
+                  />
                 </div>
 
-                <label className={styles.agreement}>
+                <label className="mb-5 flex cursor-pointer items-start gap-2 text-[14px] leading-[1.6]">
                   <input
                     checked={registerForm.agreement}
-                    className={styles.checkboxInput}
+                    className="mt-0.5 h-4 w-4 shrink-0 accent-[color:var(--primary-600)]"
                     onChange={updateRegisterField("agreement")}
                     type="checkbox"
                   />
                   <span>
                     我已阅读并同意{" "}
-                    <a className={styles.link} href="#">
+                    <a
+                      className="text-[color:var(--primary-600)] no-underline transition-colors duration-300 hover:text-[color:var(--primary-700)] hover:underline"
+                      href="#"
+                    >
                       用户协议
                     </a>{" "}
-                    与{" "}
-                    <a className={styles.link} href="#">
+                    和{" "}
+                    <a
+                      className="text-[color:var(--primary-600)] no-underline transition-colors duration-300 hover:text-[color:var(--primary-700)] hover:underline"
+                      href="#"
+                    >
                       隐私政策
                     </a>
                   </span>
                 </label>
-                {registerErrors.agreement ? (
-                  <p className={styles.errorText}>{registerErrors.agreement}</p>
-                ) : null}
 
-                <button className={styles.submitButton} type="submit">
-                  <CheckCircleIcon className={styles.buttonIcon} />
+                <button
+                  className="mb-5 w-full rounded-[10px] bg-[linear-gradient(135deg,var(--primary-600),var(--primary-700))] px-[14px] py-[14px] text-[16px] font-semibold text-white transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_4px_15px_rgba(0,0,0,0.1)]"
+                  onClick={() => navigate("/home")}
+                  type="button"
+                >
                   注册
                 </button>
-
-                <p className={styles.tabFootnote}>
-                  已有账号？
-                  <button
-                    className={styles.tabSwitchLink}
-                    onClick={() => setActiveTab("login")}
-                    type="button"
-                  >
-                    直接登录
-                  </button>
-                </p>
-              </form>
+              </div>
             )}
           </div>
-        </section>
+        </div>
       </div>
     </div>
   );
