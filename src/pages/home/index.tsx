@@ -507,26 +507,6 @@ export default function Home() {
                     {renderSectionIcon(section.icon)}
                     {section.title}
                   </h3>
-
-                  {section.key === "reading" ? (
-                    <div className="flex gap-[5px] rounded-lg bg-[color:var(--bg-secondary)] p-1">
-                      {rankingTabs.map((tab) => (
-                        <button
-                          className={[
-                            "rounded-[6px] border-none px-3 py-[6px] text-[12px] text-[color:var(--text-secondary)] transition-all duration-300",
-                            activeRankingTab === tab
-                              ? "bg-white text-[color:var(--primary-600)] shadow-[0_2px_8px_rgba(0,0,0,0.1)]"
-                              : "bg-transparent",
-                          ].join(" ")}
-                          key={tab}
-                          onClick={() => setActiveRankingTab(tab)}
-                          type="button"
-                        >
-                          {tab}
-                        </button>
-                      ))}
-                    </div>
-                  ) : null}
                 </div>
 
                 <ul className="list-none">

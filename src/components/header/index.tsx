@@ -1,12 +1,7 @@
-import { Link } from 'react-router-dom';
-import { RobotIcon, SearchIcon } from '../Icon/rankingIcon';
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
+import { RobotIcon, SearchIcon } from "../Icon/rankingIcon";
 
 export const Header = () => {
-  const navigate = useNavigate();
-  const [activePath, setActivePath] = useState("/ranking"); // 默认激活排行榜
-
   const navLinks: ReadonlyArray<{
     href: string;
     label: string;
@@ -18,13 +13,8 @@ export const Header = () => {
     { href: "/forum", label: "论坛" },
   ] as const;
 
-  const handleNavClick = (href: string) => {
-    setActivePath(href);
-    navigate(href);
-  };
-
   return (
-    <header className="z-[10] fixed bg-[linear-gradient(135deg,var(--primary-700),var(--primary-800))] py-5 shadow-[0_4px_20px_rgba(0,0,0,0.1)] w-[100vw]">
+    <header className="z-[10] fixed w-[100vw] bg-[linear-gradient(135deg,var(--primary-700),var(--primary-800))] py-5 shadow-[0_4px_20px_rgba(0,0,0,0.1)]">
       <div className="m-0 px-10">
         <div className="flex flex-col items-center justify-between gap-5 min-[769px]:flex-row">
           <div className="flex items-center gap-[10px] text-[28px] font-extrabold text-white">
@@ -51,20 +41,19 @@ export const Header = () => {
 
           <nav className="flex flex-wrap justify-center gap-[30px]">
             {navLinks.map((link) => (
-              <a
+              <NavLink
                 key={link.label}
-                href={link.href}
-                className={[
-                  "rounded-lg px-4 py-2 text-[15px] font-semibold text-white transition-all duration-300 hover:bg-white/20",
-                  activePath === link.href ? "bg-white/30" : "", // 动态判断 active
-                ].join(" ")}
-                onClick={(e) => {
-                  e.preventDefault();
-                  handleNavClick(link.href);
-                }}
+                className={({ isActive }) =>
+                  [
+                    "rounded-lg px-4 py-2 text-[15px] font-semibold text-white transition-all duration-300 hover:bg-white/20",
+                    isActive ? "bg-white/30" : "",
+                  ].join(" ")
+                }
+                end={link.href === "/"}
+                to={link.href}
               >
                 {link.label}
-              </a>
+              </NavLink>
             ))}
           </nav>
 
