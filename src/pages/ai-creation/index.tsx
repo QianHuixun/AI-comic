@@ -169,6 +169,7 @@ export default function AICreation() {
   const [characters, setCharacters] = useState<CharacterRecord[]>([]);
   const [selectedChapterId, setSelectedChapterId] = useState<number | null>(null);
   const [chapterDetail, setChapterDetail] = useState<ChapterDetail | null>(null);
+  const [isLoadingChapterDetail, setIsLoadingChapterDetail] = useState(false);
   const [selectedCharacterId, setSelectedCharacterId] = useState<number | null>(null);
   const [characterDetail, setCharacterDetail] = useState<CharacterDetailRecord | null>(null);
   const [characterDetailError, setCharacterDetailError] = useState("");
@@ -307,11 +308,16 @@ export default function AICreation() {
   }
 
   async function loadChapterDetail(chapterId: number) {
+    setIsLoadingChapterDetail(true);
+
     try {
       const detail = await fetchChapterDetail(chapterId);
       setChapterDetail(detail);
     } catch (error) {
+      setChapterDetail(null);
       setWorkspaceError(getApiErrorMessage(error));
+    } finally {
+      setIsLoadingChapterDetail(false);
     }
   }
 
@@ -1086,7 +1092,11 @@ export default function AICreation() {
                   </span>
                 </div>
 
-                {chapterDetail ? (
+                {isLoadingChapterDetail ? (
+                  <div className="rounded-[24px] border border-dashed border-[color:var(--border)] bg-[color:var(--bg-secondary)] p-8 text-[14px] leading-8 text-[color:var(--text-secondary)]">
+                    正在加载章节详情、摘要、分镜和角色动作。
+                  </div>
+                ) : chapterDetail ? (
                   <div className="space-y-6">
                     {chapterDetail.status === "failed" || chapterDetail.analysisError || chapterAnalysisError ? (
                       <div className="rounded-[24px] border border-[rgba(201,79,70,0.18)] bg-[rgba(201,79,70,0.06)] px-5 py-4 text-[14px] leading-7 text-[color:var(--error)]">
