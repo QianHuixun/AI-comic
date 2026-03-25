@@ -88,4 +88,30 @@ export class NovelService {
       },
     };
   }
+
+  async deleteNovel(novelIdParam: unknown, userId: number) {
+    const novelId = Number(novelIdParam);
+
+    if (!Number.isInteger(novelId) || novelId <= 0) {
+      throw new HttpError(400, "novelId 必须是正整数");
+    }
+
+    const [deletedNovel] = await db
+      .delete(novels)
+      .where(and(eq(novels.id, novelId), eq(novels.userId, userId)))
+      .returning({
+        id: novels.id,
+        title: novels.title,
+      });
+
+    if (!deletedNovel) {
+      throw new HttpError(404, "小说不存在");
+    }
+
+    return {
+      success: true as const,
+      message: "小说删除成功",
+      data: deletedNovel,
+    };
+  }
 }

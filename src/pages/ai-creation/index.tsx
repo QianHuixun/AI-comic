@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import {
   analyzeChapter,
   createChapter,
+  deleteNovel,
   createNovel,
   fetchChapterDetail,
   fetchCharacterDetail,
@@ -158,6 +159,7 @@ export default function AICreation() {
   const [workspaceError, setWorkspaceError] = useState("");
   const [isLoadingWorkspace, setIsLoadingWorkspace] = useState(false);
   const [isCreatingNovel, setIsCreatingNovel] = useState(false);
+  const [isDeletingNovel, setIsDeletingNovel] = useState(false);
   const [isSubmittingChapter, setIsSubmittingChapter] = useState(false);
   const [isAnalyzingChapter, setIsAnalyzingChapter] = useState(false);
   const [isGeneratingComic, setIsGeneratingComic] = useState(false);
@@ -367,6 +369,43 @@ export default function AICreation() {
       setWorkspaceError(getApiErrorMessage(error));
     } finally {
       setIsCreatingNovel(false);
+    }
+  }
+
+  async function handleDeleteNovel() {
+    if (selectedNovelId === null || !novelDetail) {
+      setWorkspaceError("请先选择一本小说");
+      return;
+    }
+
+    if (
+      typeof window !== "undefined" &&
+      !window.confirm(`确认删除小说《${novelDetail.title}》吗？对应章节、角色、分镜图和漫画页会一并删除。`)
+    ) {
+      return;
+    }
+
+    setIsDeletingNovel(true);
+    setWorkspaceError("");
+
+    try {
+      const deletedNovel = await deleteNovel(selectedNovelId);
+
+      setNovelDetail(null);
+      setChapters([]);
+      setCharacters([]);
+      setSelectedChapterId(null);
+      setChapterDetail(null);
+      setSelectedCharacterId(null);
+      setCharacterDetail(null);
+      setSelectedNovelId(null);
+      setWorkspaceMessage(`小说《${deletedNovel.title}》已删除，对应章节和漫画数据已一并清除。`);
+
+      await handleLoadWorkspace();
+    } catch (error) {
+      setWorkspaceError(getApiErrorMessage(error));
+    } finally {
+      setIsDeletingNovel(false);
     }
   }
 
@@ -817,6 +856,14 @@ export default function AICreation() {
                   </div>
 
                   <div className="flex flex-wrap items-center justify-end gap-3">
+                    <button
+                      className="rounded-xl border border-[rgba(201,79,70,0.2)] bg-white px-5 py-3 text-[14px] font-semibold text-[color:var(--error)] transition-all duration-300 hover:-translate-y-[1px] disabled:cursor-not-allowed disabled:opacity-60"
+                      disabled={selectedNovelId === null || isDeletingNovel || isLoadingWorkspace}
+                      onClick={() => void handleDeleteNovel()}
+                      type="button"
+                    >
+                      {isDeletingNovel ? "删除小说中..." : "删除当前小说"}
+                    </button>
                     {selectedChapterRecord?.status === "failed" ? (
                       <span className="rounded-full bg-[rgba(201,79,70,0.12)] px-3 py-2 text-[12px] font-semibold text-[color:var(--error)]">
                         上次分析失败，可直接重新分析

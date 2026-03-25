@@ -51,6 +51,19 @@ export class NovelController {
       });
     }
   };
+
+  deleteNovel = async (req: Request, res: Response) => {
+    try {
+      const user = getAuthenticatedUser(req);
+      const result = await this.novelService.deleteNovel(req.params.novelId, user.userId);
+      return res.status(200).json(result);
+    } catch (error) {
+      return res.status(getErrorStatusCode(error)).json({
+        success: false,
+        message: getErrorMessage(error),
+      });
+    }
+  };
 }
 
 export const novelController = new NovelController();

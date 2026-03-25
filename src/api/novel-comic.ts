@@ -50,6 +50,18 @@ export async function createNovel(payload: CreateNovelPayload): Promise<NovelRec
   return response.data.data;
 }
 
+export async function deleteNovel(
+  novelId: number,
+): Promise<{
+  id: number;
+  title: string;
+}> {
+  const response = await request.delete<ApiResponse<{ id: number; title: string }>>(
+    `/novels/${novelId}`,
+  );
+  return response.data.data;
+}
+
 export async function fetchNovelDetail(novelId: number): Promise<NovelDetail> {
   const response = await request.get<ApiResponse<NovelDetail>>(`/novels/${novelId}`);
   return response.data.data;
