@@ -120,6 +120,9 @@ export async function analyzeChapter(
   const response = await request.post<ApiResponse<AnalyzeChapterResponse>>(
     `/chapters/${chapterId}/analyze`,
     { force: options?.force === true },
+    {
+      timeout: 300000,
+    },
   );
   return response.data.data;
 }
