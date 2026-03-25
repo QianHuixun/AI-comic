@@ -5,12 +5,18 @@ import { Form, Input, Checkbox, Button, message } from "antd";
 import type { AuthTab, FeatureItem, LoginForm, RegisterForm } from "../../lib/types/login";
 import { BookIcon, MessageIcon, PhoneIcon, UserIcon } from "../../components/Icon/login";
 import request from "../../api";
+import { storeAuthSession } from "../../lib/auth/session.ts";
 
 type AuthApiResponse = {
   success: boolean;
   message: string;
   data?: {
     token?: string;
+    user?: {
+      id: number;
+      phoneNumber: string;
+      name: string | null;
+    };
     [key: string]: unknown;
   };
 };
@@ -61,8 +67,20 @@ function getAuthErrorMessage(error: unknown) {
   return "请求失败，请稍后重试";
 }
 
-function storeSession(token: string, remember: boolean, phone: string) {
-  localStorage.setItem("token", token);
+function storeSession(
+  token: string,
+  user: NonNullable<AuthApiResponse["data"]>["user"],
+  remember: boolean,
+  phone: string,
+) {
+  if (!user) {
+    throw new Error("登录响应缺少用户信息");
+  }
+
+  storeAuthSession({
+    token,
+    user,
+  });
 
   if (remember) {
     localStorage.setItem("rememberedPhone", phone);
@@ -102,11 +120,20 @@ export default function LoginPage() {
         passWord: values.password,
       });
 
-      if (!response.data.success || !response.data.data?.token) {
+      if (
+        !response.data.success ||
+        !response.data.data?.token ||
+        !response.data.data.user
+      ) {
         throw new Error(response.data.message || "登录失败");
       }
 
-      storeSession(response.data.data.token, values.remember, values.phone);
+      storeSession(
+        response.data.data.token,
+        response.data.data.user,
+        values.remember,
+        values.phone,
+      );
       message.success(response.data.message || "登录成功");
       navigate("/");
     } catch (error) {

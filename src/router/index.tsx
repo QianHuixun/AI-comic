@@ -41,7 +41,11 @@ const router = createBrowserRouter([
       },
       {
         path: "ai-creation",
-        element: <AiCreation />,
+        element: (
+          <ProtectedRoute>
+            <AiCreation />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "forum",
