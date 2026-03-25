@@ -107,7 +107,9 @@ export async function uploadChapter(
 }
 
 export async function fetchChapterDetail(chapterId: number): Promise<ChapterDetail> {
-  const response = await request.get<ApiResponse<ChapterDetail>>(`/chapters/${chapterId}`);
+  const response = await request.get<ApiResponse<ChapterDetail>>(`/chapters/${chapterId}`, {
+    timeout: 300000,
+  });
   return response.data.data;
 }
 
@@ -121,7 +123,7 @@ export async function analyzeChapter(
     `/chapters/${chapterId}/analyze`,
     { force: options?.force === true },
     {
-      timeout: 300000,
+      timeout: 900000,
     },
   );
   return response.data.data;

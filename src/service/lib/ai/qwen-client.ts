@@ -61,10 +61,10 @@ function getModel(): string {
 
 function getTimeoutMs(): number {
   const rawTimeout = process.env.QWEN_TIMEOUT_MS;
-  const parsedTimeout = rawTimeout ? Number(rawTimeout) : 30000;
+  const parsedTimeout = rawTimeout ? Number(rawTimeout) : 120000;
 
   if (!Number.isFinite(parsedTimeout) || parsedTimeout <= 0) {
-    return 30000;
+    return 120000;
   }
 
   return parsedTimeout;
