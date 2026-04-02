@@ -1,12 +1,12 @@
 import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
-import { createClient } from "@supabase/supabase-js";
 import dotenv from "dotenv";
 dotenv.config();
 // 1. 初始化 Postgres 客户端（Drizzle 用）
 const sql = postgres(process.env.DATABASE_URL!, {
   ssl: { rejectUnauthorized: false }, // Supabase 需开启 SSL
   max: 10, // 连接池大小
+  prepare: false, // Supabase pooler/pgbouncer 下禁用 prepared statements
 });
 
 // 2. 初始化 Drizzle ORM 实例

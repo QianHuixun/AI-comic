@@ -32,8 +32,6 @@ const carouselSlides = [
   },
 ] as const;
 
-const rankingTabs = ["周榜", "月榜", "总榜"] as const;
-
 const rankingSections = [
   {
     items: [
@@ -410,8 +408,6 @@ function renderComicStatIcon(icon: "comment" | "eye" | "heart") {
 
 export default function Home() {
   const [activeSlide, setActiveSlide] = useState(0);
-  const [activeRankingTab, setActiveRankingTab] =
-    useState<(typeof rankingTabs)[number]>("周榜");
 
   useEffect(() => {
     const intervalId = window.setInterval(() => {
